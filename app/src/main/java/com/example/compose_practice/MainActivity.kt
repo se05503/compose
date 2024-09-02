@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -45,7 +46,8 @@ fun ButtonExample(onButtonClicked: () -> Unit) {
         onClick = onButtonClicked,
         enabled = true,
         border = BorderStroke(10.dp, Color.Gray),
-        shape = CircleShape
+        shape = CircleShape,
+        contentPadding = PaddingValues(20.dp)
     ) {
         Icon(
             imageVector = Icons.Filled.Send,
