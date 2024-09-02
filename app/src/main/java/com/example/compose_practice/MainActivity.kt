@@ -36,9 +36,10 @@ class MainActivity : ComponentActivity() {
 // 실제로 코드를 주로 작성하는 곳
 @Composable
 fun ButtonExample(onButtonClicked: () -> Unit) {
-    Button(onClick = onButtonClicked) {
-        // contentDescription 의 경우, text 와 같은 의미를 가진다면 쓰지 않아도 된다. (null)
-        // 만약 text 와 다른 의미를 가진다면 해당 내용을 쓰는게 좋다.
+    Button(
+        onClick = onButtonClicked,
+        enabled = false
+    ) {
         Icon(
             imageVector = Icons.Filled.Send,
             contentDescription = null
