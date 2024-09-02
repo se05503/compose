@@ -8,6 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -42,7 +44,8 @@ fun ButtonExample(onButtonClicked: () -> Unit) {
     Button(
         onClick = onButtonClicked,
         enabled = true,
-        border = BorderStroke(10.dp, Color.Gray)
+        border = BorderStroke(10.dp, Color.Gray),
+        shape = CircleShape
     ) {
         Icon(
             imageVector = Icons.Filled.Send,
