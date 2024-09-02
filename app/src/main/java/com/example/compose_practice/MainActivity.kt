@@ -1,16 +1,21 @@
 package com.example.compose_practice
 
 import android.os.Bundle
+import android.widget.Space
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
@@ -38,6 +43,7 @@ fun ButtonExample(onButtonClicked: () -> Unit) {
             imageVector = Icons.Filled.Send,
             contentDescription = null
         )
+        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
         Text(text = "Send")
     }
 }
