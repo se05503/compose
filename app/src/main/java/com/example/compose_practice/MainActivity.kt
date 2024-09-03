@@ -46,7 +46,7 @@ fun ModifierEx() {
             contentColor = Color.Green
         ),
         onClick = {},
-        enabled = false,
+        enabled = true,
         modifier = Modifier
             .size(200.dp)
             .padding(10.dp)
@@ -54,12 +54,16 @@ fun ModifierEx() {
         Icon(
             imageVector = Icons.Filled.Search,
             // Text 에서 "Search" 를 표현하기 때문에 null 을 넣음. 만약에 아이콘과 텍스트가 다른 의미를 가진다면 null 이 아닌 아이콘 설명을 넣어줘야 함.
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.background(Color.Blue)
         )
-        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+        Spacer(modifier = Modifier
+            .size(ButtonDefaults.IconSpacing)
+            .background(Color.Gray))
         Text(
             "Search",
-            modifier = Modifier.clickable {}
+            modifier = Modifier.offset(y = 30.dp)
+                .background(Color.Blue)
         )
     }
 }
