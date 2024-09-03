@@ -46,7 +46,8 @@ fun ModifierEx() {
         ),
         onClick = {},
         modifier = Modifier
-            .size(300.dp)
+            .size(200.dp)
+            .padding(10.dp)
     ) {
         Icon(
             imageVector = Icons.Filled.Search,
