@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,6 +46,7 @@ fun ModifierEx() {
             contentColor = Color.Green
         ),
         onClick = {},
+        enabled = false,
         modifier = Modifier
             .size(200.dp)
             .padding(10.dp)
@@ -55,7 +57,10 @@ fun ModifierEx() {
             contentDescription = null
         )
         Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-        Text("Search")
+        Text(
+            "Search",
+            modifier = Modifier.clickable {}
+        )
     }
 }
 
