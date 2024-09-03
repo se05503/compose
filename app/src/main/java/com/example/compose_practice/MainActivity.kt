@@ -6,10 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -43,7 +40,7 @@ class MainActivity : ComponentActivity() {
 fun ModifierEx() {
     Button(
         onClick = {},
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.height(100.dp)
     ) {
         Icon(
             imageVector = Icons.Filled.Search,
