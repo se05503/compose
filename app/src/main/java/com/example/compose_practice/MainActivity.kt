@@ -40,7 +40,9 @@ class MainActivity : ComponentActivity() {
 fun ModifierEx() {
     Button(
         onClick = {},
-        modifier = Modifier.height(100.dp)
+        modifier = Modifier
+            .height(100.dp)
+            .width(200.dp)
     ) {
         Icon(
             imageVector = Icons.Filled.Search,
