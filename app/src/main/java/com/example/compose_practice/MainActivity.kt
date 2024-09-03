@@ -40,10 +40,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ModifierEx() {
     Button(
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.Magenta,
+            contentColor = Color.Green
+        ),
         onClick = {},
         modifier = Modifier
             .size(300.dp)
-            .background(Color.Red)
     ) {
         Icon(
             imageVector = Icons.Filled.Search,
