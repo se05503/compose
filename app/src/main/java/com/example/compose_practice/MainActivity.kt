@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,9 +30,9 @@ class MainActivity : ComponentActivity() {
 // 실제로 코드를 주로 작성하는 곳
 @Composable
 fun BoxEx() {
-    Box(modifier = Modifier.size(100.dp)) {
+    Box {
         Box(modifier = Modifier
-            .size(70.dp)
+            .fillMaxSize()
             .background(Color.Cyan)
             .align(Alignment.CenterStart))
         Box(modifier = Modifier
