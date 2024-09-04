@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +35,8 @@ fun Greeting(text: String) {
         modifier = Modifier.padding(15.dp),
         elevation = 5.dp,
         border = BorderStroke(width = 2.dp, color = Color.Red),
-        shape = CircleShape
+        shape = CircleShape,
+        color = MaterialTheme.colors.error
     ) {
         Text(
             text = "Hello $text!",
