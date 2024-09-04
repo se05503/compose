@@ -3,12 +3,13 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
@@ -29,8 +30,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BoxEx() {
     Box(modifier = Modifier.size(100.dp)) {
-        Text(text = "Compose", modifier = Modifier.align(Alignment.Center))
-        Text(text = "Coffee", modifier = Modifier.align(Alignment.BottomEnd))
+        Box(modifier = Modifier
+            .size(70.dp)
+            .background(Color.Cyan)
+            .align(Alignment.CenterStart))
+        Box(modifier = Modifier
+            .size(70.dp)
+            .background(Color.Yellow)
+            .align(Alignment.BottomEnd))
     }
 }
 
