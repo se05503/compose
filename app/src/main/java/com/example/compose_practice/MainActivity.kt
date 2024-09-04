@@ -3,11 +3,13 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
@@ -29,7 +31,8 @@ class MainActivity : ComponentActivity() {
 fun Greeting(text: String) {
     Surface(
         modifier = Modifier.padding(15.dp),
-        elevation = 5.dp
+        elevation = 5.dp,
+        border = BorderStroke(width = 2.dp, color = Color.Red)
     ) {
         Text(
             text = "Hello $text!",
