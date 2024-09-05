@@ -31,12 +31,11 @@ class MainActivity : ComponentActivity() {
 fun RowEx() {
     Row(
         modifier = Modifier.height(60.dp).width(250.dp),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.Center
+        verticalAlignment = Alignment.Bottom
     ) {
-        Text(text = "첫번째!", modifier = Modifier.align(Alignment.Top))
-        Text(text = "두번째!")
-        Text(text = "세번째!")
+        Text(text = "첫번째!", modifier = Modifier.align(Alignment.Top).weight(1f))
+        Text(text = "두번째!", modifier = Modifier.weight(2f))
+        Text(text = "세번째!", modifier = Modifier.weight(4f))
     }
 }
 
