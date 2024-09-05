@@ -27,10 +27,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun RowEx() {
-    Row(modifier = Modifier.height(40.dp)) {
+    Row(
+        modifier = Modifier.height(40.dp),
+        verticalAlignment = Alignment.Bottom
+    ) {
         Text(text = "첫번째!", modifier = Modifier.align(Alignment.Top))
-        Text(text = "두번째!", modifier = Modifier.align(Alignment.CenterVertically))
-        Text(text = "세번째!", modifier = Modifier.align(Alignment.Bottom))
+        Text(text = "두번째!")
+        Text(text = "세번째!")
     }
 }
 
