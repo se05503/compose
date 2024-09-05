@@ -4,10 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -27,42 +24,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             // setContent 안에 모든 코드를 집어넣는 것은 좋지 않다.
             ComposePracticeTheme {
-                RowEx()
+                ColumnEx()
             }
         }
     }
 }
 
 @Composable
-fun RowEx() {
-    Row(
-        modifier = Modifier
-            .height(50.dp)
-            .width(200.dp),
-        verticalAlignment = Alignment.Bottom
+fun ColumnEx() {
+    Column(
+        modifier = Modifier.size(100.dp),
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Text(
-            text = "첫번째!",
-            modifier = Modifier
-                .align(Alignment.Top)
-                .weight(3f)
-                .background(Color.Magenta),
-            textAlign = TextAlign.Center
-        )
-        Icon(
-            imageVector = Icons.Filled.Settings,
-            contentDescription = null,
-            modifier = Modifier
-                .weight(1f)
-                .background(Color.Cyan)
-        )
-        Text(
-            text = "세번째!",
-            modifier = Modifier
-                .weight(3f)
-                .background(Color.Blue),
-            textAlign = TextAlign.Center
-        )
+        Text(text = "첫번째")
+        Text(text = "두번째")
+        Text(text = "세번째")
     }
 }
 
@@ -70,6 +47,6 @@ fun RowEx() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        RowEx()
+        ColumnEx()
     }
 }
