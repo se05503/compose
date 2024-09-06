@@ -5,10 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +28,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Outer() {
     Column {
-        Inner()
+        Inner(
+            modifier = Modifier
+                .widthIn(min = 100.dp, max = 300.dp)
+                .heightIn(min = 20.dp, max = 40.dp)
+        )
     }
 }
 
