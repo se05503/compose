@@ -3,12 +3,10 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,11 +25,16 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Outer() {
-    Column {
+    Column(modifier = Modifier.width(100.dp)) {
         Inner(
             modifier = Modifier
-                .widthIn(min = 100.dp, max = 300.dp)
-                .heightIn(min = 20.dp, max = 40.dp)
+                .width(300.dp)
+                .height(300.dp)
+        )
+        Inner(
+            modifier = Modifier
+                .width(300.dp)
+                .height(300.dp)
         )
     }
 }
@@ -39,6 +42,12 @@ fun Outer() {
 @Composable
 private fun Inner(modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier) {
+        if (maxHeight > 40.dp) {
+            Text(
+                text = "maxHeight 가 40dp 를 넘어요",
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
+        }
         Text("maxWidth: $maxWidth, maxHeight: $maxHeight, minWidth: $minWidth, minHeight: $minHeight")
     }
 }
