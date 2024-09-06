@@ -1,15 +1,17 @@
 package com.example.compose_practice
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.core.R
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,38 +19,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                Outer()
+                Greeting()
             }
         }
     }
 }
 
 @Composable
-fun Outer() {
-    Column(modifier = Modifier.width(100.dp)) {
-        Inner(
-            modifier = Modifier
-                .width(300.dp)
-                .height(300.dp)
+fun Greeting() {
+    Column {
+        Image(
+            painter = painterResource(id = com.example.compose_practice.R.drawable.ic_android),
+            contentDescription = "android"
         )
-        Inner(
-            modifier = Modifier
-                .width(300.dp)
-                .height(300.dp)
+        Image(
+            imageVector = Icons.Filled.Settings,
+            contentDescription = "Setting"
         )
-    }
-}
-
-@Composable
-private fun Inner(modifier: Modifier = Modifier) {
-    BoxWithConstraints(modifier) {
-        if (maxHeight > 40.dp) {
-            Text(
-                text = "maxHeight 가 40dp 를 넘어요",
-                modifier = Modifier.align(Alignment.BottomEnd)
-            )
-        }
-        Text("maxWidth: $maxWidth, maxHeight: $maxHeight, minWidth: $minWidth, minHeight: $minHeight")
     }
 }
 
@@ -56,6 +43,6 @@ private fun Inner(modifier: Modifier = Modifier) {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        Outer()
+        Greeting()
     }
 }
