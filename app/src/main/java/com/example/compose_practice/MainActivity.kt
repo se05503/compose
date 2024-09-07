@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
@@ -23,10 +24,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CoilEx() {
-    val painter = rememberImagePainter(data = "https://picsum.photos/300/300")
-    // contentDescription : 접근성을 위해서 필요한 경우 꼭 넣어주기
-    //
-    Image(painter = painter, contentDescription = "네트워크 이미지")
+    Column {
+        AsyncImage(model = "https://picsum.photos/300/300", contentDescription = "network image1")
+        AsyncImage(model = "https://picsum.photos/300/300", contentDescription = "network image2")
+    }
 }
 
 @Preview(showBackground = true)
