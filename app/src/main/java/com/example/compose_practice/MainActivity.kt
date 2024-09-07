@@ -25,9 +25,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CheckBoxEx() {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        var isChecked by remember { mutableStateOf(false) }
-        Checkbox(checked = isChecked, onCheckedChange = {
-            isChecked = !isChecked
+        // checked = getter, setChecked = setter
+        var (checked, setChecked) = remember { mutableStateOf(false) }
+        Checkbox(checked = checked, onCheckedChange = {
+            checked = !checked
+            // setChecked(!checked)
         })
         Text(text = "CheckBox")
     }
