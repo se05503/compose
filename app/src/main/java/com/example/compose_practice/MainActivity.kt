@@ -5,7 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
@@ -16,17 +20,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                CoilEx()
+                CheckBoxEx()
             }
         }
     }
 }
 
 @Composable
-fun CoilEx() {
-    Column {
-        AsyncImage(model = "https://picsum.photos/300/300", contentDescription = "network image1")
-        AsyncImage(model = "https://picsum.photos/300/300", contentDescription = "network image2")
+fun CheckBoxEx() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = false, onCheckedChange = {})
+        Text(text = "CheckBox")
     }
 }
 
@@ -34,6 +38,6 @@ fun CoilEx() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        CoilEx()
+        CheckBoxEx()
     }
 }
