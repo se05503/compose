@@ -29,7 +29,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CheckBoxEx() {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Checkbox(checked = false, onCheckedChange = {})
+        var ischecked = false
+        Checkbox(checked = ischecked, onCheckedChange = {
+            ischecked = !ischecked
+        })
         Text(text = "CheckBox")
     }
 }
