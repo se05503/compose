@@ -33,25 +33,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TopAppBar(name: String) {
     Column {
-        androidx.compose.material.TopAppBar(
-            title = { Text(text = "TopAppBar") },
-            navigationIcon = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Up Navigation")
-                }
-            },
-            actions = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Filled.Search, contentDescription = "검색")
-                }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Filled.Settings, contentDescription = "설정")
-                }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "계정")
-                }
+        androidx.compose.material.TopAppBar {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Up Navigation")
             }
-        )
+            Text(text = "TopAppBar", modifier = Modifier.weight(1f))
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.Filled.Search, contentDescription = "검색")
+            }
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.Filled.Settings, contentDescription = "설정")
+            }
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "계정")
+            }
+        }
         Text(text = "Hello $name!")
     }
 }
