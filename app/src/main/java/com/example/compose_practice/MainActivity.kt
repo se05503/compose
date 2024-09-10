@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,7 +31,7 @@ class MainActivity : ComponentActivity() {
 fun TextField() {
     var name by remember { mutableStateOf("Compose") }
     Column(modifier = Modifier.padding(16.dp)) {
-        androidx.compose.material.TextField(
+        OutlinedTextField(
             value = name,
             onValueChange = {
                 name = it
@@ -38,7 +40,11 @@ fun TextField() {
                 Text(text = "지금 안드로이드에서 배우는 것?")
             }
         )
+        Spacer(modifier = Modifier.size(8.dp))
         Text(text = "TextField Value : $name")
+        OutlinedButton(onClick = { /*TODO*/ }) {
+
+        }
     }
 }
 
