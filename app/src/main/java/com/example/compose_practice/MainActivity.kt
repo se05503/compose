@@ -29,9 +29,15 @@ class MainActivity : ComponentActivity() {
 fun TextField() {
     var name by remember { mutableStateOf("Compose") }
     Column(modifier = Modifier.padding(16.dp)) {
-        androidx.compose.material.TextField(value = name, onValueChange = {
-            name = it
-        })
+        androidx.compose.material.TextField(
+            value = name,
+            onValueChange = {
+                name = it
+            },
+            label = {
+                Text(text = "지금 안드로이드에서 배우는 것?")
+            }
+        )
         Text(text = "TextField Value : $name")
     }
 }
