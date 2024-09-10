@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,10 +27,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TextField() {
+    var name by remember { mutableStateOf("Compose") }
     Column(modifier = Modifier.padding(16.dp)) {
-        androidx.compose.material.TextField(value = "Compose", onValueChange = {})
-        Text(text = "Compose의")
-        Text(text = "TextField 실습중")
+        androidx.compose.material.TextField(value = name, onValueChange = {
+            name = it
+        })
+        Text(text = "TextField Value : $name")
     }
 }
 
