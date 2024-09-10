@@ -5,9 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,30 +24,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                TextField()
+                TopAppBar("Compose")
             }
         }
     }
 }
 
 @Composable
-fun TextField() {
-    var name by remember { mutableStateOf("Compose") }
-    Column(modifier = Modifier.padding(16.dp)) {
-        OutlinedTextField(
-            value = name,
-            onValueChange = {
-                name = it
+fun TopAppBar(name: String) {
+    Column {
+        androidx.compose.material.TopAppBar(
+            title = { Text(text = "TopAppBar") },
+            navigationIcon = {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Up Navigation")
+                }
             },
-            label = {
-                Text(text = "지금 안드로이드에서 배우는 것?")
+            actions = {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.Search, contentDescription = "검색")
+                }
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.Settings, contentDescription = "설정")
+                }
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "계정")
+                }
             }
         )
-        Spacer(modifier = Modifier.size(8.dp))
-        Text(text = "TextField Value : $name")
-        OutlinedButton(onClick = { /*TODO*/ }) {
-
-        }
+        Text(text = "Hello $name!")
     }
 }
 
@@ -81,6 +89,6 @@ fun PracticeChap12() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        TextField()
+        TopAppBar("Compose")
     }
 }
