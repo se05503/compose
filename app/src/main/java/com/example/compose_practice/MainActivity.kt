@@ -3,16 +3,16 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -23,74 +23,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                Scaffold()
+                PracticeChap12()
             }
         }
     }
 }
-
-@Composable
-fun CheckBoxWithContent(
-    checked: Boolean,
-    toggleState: () -> Unit,
-    content: @Composable RowScope.() -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { toggleState() }
-    ) {
-        Checkbox(checked = checked, onCheckedChange = { toggleState() })
-        content()
-    }
-}
-
-@Composable
-fun Scaffold() {
-    var checked by remember { mutableStateOf(false) }
-    androidx.compose.material.Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Scaffold") },
-                navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Image(imageVector = Icons.Filled.ArrowBack, contentDescription = "뒤로가기")
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
-
-            }
-        }
-    ) {
-        androidx.compose.material.Surface(modifier = Modifier.padding(8.dp)) {
-            CheckBoxWithContent(checked = checked, toggleState = { checked = !checked }) {
-                Text(text = "Compose Scaffold")
-            }
-        }
-    }
-}
-
 
 @Composable
 fun PracticeChap12() {
     // Ch03-12. 프로필 카드 구현 실습 코드 (아직 미완성)
     androidx.compose.material.Surface(
         elevation = 5.dp,
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.padding(10.dp).height(100.dp),
         shape = RoundedCornerShape(5.dp)
     ) {
         Row(
-            modifier = Modifier.height(80.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(8.dp)
         ) {
             AsyncImage(
                 model = "https://cdn.pixabay.com/photo/2015/04/23/22/00/flowers-736885_960_720.jpg",
                 contentDescription = "example network image",
-                modifier = Modifier.weight(2f)
+                modifier = Modifier
+                    .weight(2f)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop,
+                // placeholder 값으로 무엇을 지정해야하지?
+                placeholder = painterResource(R.drawable.ic_android)
             )
-            Spacer(modifier = Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(12.dp))
             Column(modifier = Modifier.weight(8f)) {
                 Text(text = "Dalinaum")
                 Text(
@@ -106,6 +67,6 @@ fun PracticeChap12() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        Scaffold()
+        PracticeChap12()
     }
 }
