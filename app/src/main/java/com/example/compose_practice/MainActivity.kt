@@ -32,28 +32,38 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CheckBoxWithSlotAPI(checked: MutableState<Boolean>, content: @Composable RowScope.() -> Unit) {
+fun CheckBoxWithSlotAPI(
+    checked: Boolean,
+    onCheckedChanged: () -> Unit,
+    content: @Composable RowScope.() -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable {
-            checked.value = !checked.value
+            onCheckedChanged()
         }
     ) {
-        Checkbox(checked = checked.value, onCheckedChange = { checked.value = it })
+        Checkbox(checked = checked, onCheckedChange = { onCheckedChanged() })
         content()
     }
 }
 
 @Composable
 fun SlotAPI() {
-    val checked1 = remember { mutableStateOf(false) }
-    val checked2 = remember { mutableStateOf(false) }
+    var checked1 by remember { mutableStateOf(false) }
+    var checked2 by remember { mutableStateOf(false) }
 
     Column {
-        CheckBoxWithSlotAPI(checked = checked1) {
+        CheckBoxWithSlotAPI(
+            checked = checked1,
+            onCheckedChanged = { checked1 = !checked1}
+        ) {
             Text(text = "Checkbox 1", modifier = Modifier.align(Alignment.CenterVertically))
         }
-        CheckBoxWithSlotAPI(checked = checked2) {
+        CheckBoxWithSlotAPI(
+            checked = checked2,
+            onCheckedChanged = {checked2 = !checked2}
+        ) {
             Text(text = "Checkbox 2")
         }
     }
