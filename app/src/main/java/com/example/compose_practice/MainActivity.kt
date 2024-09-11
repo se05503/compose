@@ -3,15 +3,13 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,49 +23,55 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                SlotAPI()
+                Scaffold()
             }
         }
     }
 }
 
 @Composable
-fun CheckBoxWithSlotAPI(
+fun CheckBoxWithContent(
     checked: Boolean,
-    onCheckedChanged: () -> Unit,
+    toggleState: () -> Unit,
     content: @Composable RowScope.() -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable {
-            onCheckedChanged()
-        }
+        modifier = Modifier.clickable { toggleState() }
     ) {
-        Checkbox(checked = checked, onCheckedChange = { onCheckedChanged() })
+        Checkbox(checked = checked, onCheckedChange = { toggleState() })
         content()
     }
 }
 
 @Composable
-fun SlotAPI() {
-    var checked1 by remember { mutableStateOf(false) }
-    var checked2 by remember { mutableStateOf(false) }
+fun Scaffold() {
+    var checked by remember { mutableStateOf(false) }
+    androidx.compose.material.Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Scaffold") },
+                navigationIcon = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Image(imageVector = Icons.Filled.ArrowBack, contentDescription = "뒤로가기")
+                    }
+                }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /*TODO*/ }) {
 
-    Column {
-        CheckBoxWithSlotAPI(
-            checked = checked1,
-            onCheckedChanged = { checked1 = !checked1}
-        ) {
-            Text(text = "Checkbox 1", modifier = Modifier.align(Alignment.CenterVertically))
+            }
         }
-        CheckBoxWithSlotAPI(
-            checked = checked2,
-            onCheckedChanged = {checked2 = !checked2}
-        ) {
-            Text(text = "Checkbox 2")
+    ) {
+        androidx.compose.material.Surface(modifier = Modifier.padding(8.dp)) {
+            CheckBoxWithContent(checked = checked, toggleState = { checked = !checked }) {
+                Text(text = "Compose Scaffold")
+            }
         }
     }
 }
+
 
 @Composable
 fun PracticeChap12() {
@@ -102,6 +106,6 @@ fun PracticeChap12() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        SlotAPI()
+        Scaffold()
     }
 }
