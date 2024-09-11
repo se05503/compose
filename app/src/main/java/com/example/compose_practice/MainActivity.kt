@@ -3,6 +3,7 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -24,31 +25,32 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                TopAppBar("Compose")
+                SlotAPI()
             }
         }
     }
 }
 
 @Composable
-fun TopAppBar(name: String) {
+fun SlotAPI() {
+    val checked1 = remember { mutableStateOf(false) }
+    val checked2 = remember { mutableStateOf(false) }
+
     Column {
-        androidx.compose.material.TopAppBar {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Up Navigation")
-            }
-            Text(text = "TopAppBar", modifier = Modifier.weight(1f))
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = "검색")
-            }
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Settings, contentDescription = "설정")
-            }
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "계정")
-            }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = checked1.value, onCheckedChange = {checked1.value = it})
+            Text(
+                text = "Checkbox1",
+                modifier = Modifier.clickable { checked1.value = !checked1.value }
+            )
         }
-        Text(text = "Hello $name!")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = checked2.value, onCheckedChange = {checked2.value = it})
+            Text(
+                text = "Checkbox2",
+                modifier = Modifier.clickable { checked2.value = !checked2.value }
+            )
+        }
     }
 }
 
@@ -85,6 +87,6 @@ fun PracticeChap12() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        TopAppBar("Compose")
+        SlotAPI()
     }
 }
