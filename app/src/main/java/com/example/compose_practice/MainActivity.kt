@@ -5,14 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -23,39 +25,57 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                PracticeChap12()
+                // Surface 의 modifier, color 속성은 영향이 없음 (넣은 이유는 설명안하심)
+                androidx.compose.material.Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    Column {
+                        PracticeChap12(cardData)
+                        PracticeChap12(cardData)
+                    }
+                }
             }
         }
+    }
+    companion object {
+        val cardData = CardData(
+            imageUri = "https://cdn.pixabay.com/photo/2015/04/23/22/00/flowers-736885_960_720.jpg",
+            imageDescription = "example network image",
+            author = "Dalinaum",
+            description = "엔텔로프 캐년은 죽기 전에 꼭 봐야할 절경으로 소개되었습니다."
+        )
     }
 }
 
 @Composable
-fun PracticeChap12() {
-    // Ch03-12. 프로필 카드 구현 실습 코드 (아직 미완성)
-    androidx.compose.material.Surface(
-        elevation = 5.dp,
-        modifier = Modifier.padding(10.dp).height(100.dp),
-        shape = RoundedCornerShape(5.dp)
+fun PracticeChap12(cardData: CardData) {
+    val placeHolderColor = Color(0x28000000)
+    Card(
+        modifier = Modifier
+            .padding(12.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
             AsyncImage(
-                model = "https://cdn.pixabay.com/photo/2015/04/23/22/00/flowers-736885_960_720.jpg",
-                contentDescription = "example network image",
+                model = cardData.imageUri,
+                contentDescription = cardData.imageDescription,
                 modifier = Modifier
-                    .weight(2f)
-                    .clip(CircleShape),
+                    .size(52.dp) // 이게 둥글게 하는데 핵심 코드
+                    .clip(CircleShape), // RoundedCornerShape 도 괜찮음
+                // Crop -> 사이즈에 맞지 않는건 잘라냄
                 contentScale = ContentScale.Crop,
-                // placeholder 값으로 무엇을 지정해야하지?
-                placeholder = painterResource(R.drawable.ic_android)
+                // placeholder 는 이미지가 없을 때 보이는 것
+                placeholder = ColorPainter(placeHolderColor)
             )
-            Spacer(modifier = Modifier.size(12.dp))
-            Column(modifier = Modifier.weight(8f)) {
-                Text(text = "Dalinaum")
+            Spacer(modifier = Modifier.size(20.dp))
+            Column {
+                Text(text = cardData.author)
+                Spacer(modifier = Modifier.size(4.dp))
                 Text(
-                    text = "엔텔로프 캐년은 죽기 전에 꼭 봐야할 절경으로 소개되었습니다."
+                    text = cardData.description
                 )
             }
         }
@@ -67,6 +87,15 @@ fun PracticeChap12() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        PracticeChap12()
+        Row {
+            PracticeChap12(MainActivity.cardData)
+        }
     }
 }
+
+data class CardData(
+    val imageUri: String,
+    val imageDescription: String,
+    val author: String,
+    val description: String
+)
