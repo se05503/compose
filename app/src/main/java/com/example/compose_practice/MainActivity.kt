@@ -61,10 +61,7 @@ fun ConstraintLayoutEx() {
                 .size(40.dp)
                 .background(Color.Green)
                 .constrainAs(greenBox) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
+                    centerTo(parent)
                 }
         )
         Box(
