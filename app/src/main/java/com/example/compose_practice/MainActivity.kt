@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
@@ -46,6 +47,7 @@ fun ConstraintLayoutEx() {
                 .background(Color.Red)
                 .constrainAs(redBox) {
                     // 위치 제약을 설정하는 곳 (기본값: 왼쪽 상단)
+                    top.linkTo(parent.top, margin = 10.dp)
                 }
         )
         Box(
@@ -53,7 +55,7 @@ fun ConstraintLayoutEx() {
                 .size(40.dp)
                 .background(Color.Yellow)
                 .constrainAs(yellowBox) {
-
+                    top.linkTo(parent.top, margin = 70.dp)
                 }
         )
         Box(
@@ -61,12 +63,11 @@ fun ConstraintLayoutEx() {
                 .size(40.dp)
                 .background(Color.Magenta)
                 .constrainAs(magentaBox) {
-
+                    top.linkTo(parent.top, margin = 30.dp)
                 }
         )
 
-//        createVerticalChain(redBox, yellowBox, magentaBox)
-        createHorizontalChain(redBox,yellowBox,magentaBox)
+        createHorizontalChain(redBox,yellowBox,magentaBox, chainStyle = ChainStyle.SpreadInside)
     }
 }
 
