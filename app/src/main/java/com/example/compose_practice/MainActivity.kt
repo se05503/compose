@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +48,7 @@ fun ConstraintLayoutEx() {
                 .background(Color.Red)
                 .constrainAs(redBox) {
                     // 위치 제약을 설정하는 곳 (기본값: 왼쪽 상단)
-                    top.linkTo(parent.top, margin = 10.dp)
+                    start.linkTo(parent.start, margin = 10.dp)
                 }
         )
         Box(
@@ -55,7 +56,7 @@ fun ConstraintLayoutEx() {
                 .size(40.dp)
                 .background(Color.Yellow)
                 .constrainAs(yellowBox) {
-                    top.linkTo(parent.top, margin = 70.dp)
+                    start.linkTo(parent.start, margin = 100.dp)
                 }
         )
         Box(
@@ -63,11 +64,18 @@ fun ConstraintLayoutEx() {
                 .size(40.dp)
                 .background(Color.Magenta)
                 .constrainAs(magentaBox) {
-                    top.linkTo(parent.top, margin = 30.dp)
+                    start.linkTo(parent.start, margin = 30.dp)
                 }
         )
-
-        createHorizontalChain(redBox,yellowBox,magentaBox, chainStyle = ChainStyle.SpreadInside)
+        createVerticalChain(redBox,yellowBox,magentaBox, chainStyle = ChainStyle.SpreadInside)
+//        val barrier = createBottomBarrier(redBox,yellowBox,magentaBox)
+        val barrier = createEndBarrier(redBox,yellowBox,magentaBox)
+        Text(
+            text = "Barrier",
+            modifier = Modifier.constrainAs(text) {
+                start.linkTo(barrier)
+                bottom.linkTo(yellowBox.bottom)
+            })
     }
 }
 
