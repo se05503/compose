@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ConstraintSetEx()
+                    ConstraintLayoutEx()
                 }
             }
         }
@@ -36,63 +36,37 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ConstraintSetEx() {
-
-    val constraintSet = ConstraintSet {
-        val redBox = createRefFor("redBox")
-        val magentaBox = createRefFor("magentaBox")
-        val greenBox = createRefFor("greenBox")
-        val yellowBox = createRefFor("yellowBox")
-
-        constrain(redBox) {
-            bottom.linkTo(parent.bottom, margin = 12.dp)
-            end.linkTo(parent.end, margin = 4.dp)
-        }
-
-        constrain(magentaBox) {
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }
-
-        constrain(greenBox) {
-            centerTo(parent)
-        }
-
-        constrain(yellowBox) {
-            start.linkTo(magentaBox.end)
-            top.linkTo(magentaBox.bottom)
-        }
-    }
-
-    ConstraintLayout(
-        constraintSet,
-        modifier = Modifier.fillMaxSize()
-    ) {
+fun ConstraintLayoutEx() {
+    ConstraintLayout(Modifier.fillMaxSize()) {
+        val (redBox, yellowBox, magentaBox, text) = createRefs()
 
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .background(Color.Red)
-                .layoutId("redBox")
-        )
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(Color.Magenta)
-                .layoutId("magentaBox")
-        )
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(Color.Green)
-                .layoutId("greenBox")
+                .constrainAs(redBox) {
+                    // 위치 제약을 설정하는 곳 (기본값: 왼쪽 상단)
+                }
         )
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .background(Color.Yellow)
-                .layoutId("yellowBox")
+                .constrainAs(yellowBox) {
+
+                }
         )
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.Magenta)
+                .constrainAs(magentaBox) {
+
+                }
+        )
+
+//        createVerticalChain(redBox, yellowBox, magentaBox)
+        createHorizontalChain(redBox,yellowBox,magentaBox)
     }
 }
 
@@ -100,6 +74,6 @@ fun ConstraintSetEx() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        ConstraintSetEx()
+        ConstraintLayoutEx()
     }
 }
