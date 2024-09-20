@@ -3,7 +3,8 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -11,15 +12,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ChainStyle
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
 import coil.compose.AsyncImage
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
@@ -28,61 +27,59 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                CatalogEx(catalogData)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    CanvasEx()
+                }
             }
         }
     }
 
-    companion object {
-        val catalogData = CatalogData(
-            imageUri = listOf("https://media.istockphoto.com/id/139717376/ko/%EC%82%AC%EC%A7%84/%EB%A1%A4%EB%9F%AC%EC%BD%94%EC%8A%A4%ED%84%B0.jpg?s=2048x2048&w=is&k=20&c=jaY_ApFfzncvTAoVmuC-uHZVC7oJKAhJcgTb2B8ir9M=","https://media.istockphoto.com/id/104144229/ko/%EC%82%AC%EC%A7%84/%EA%B7%B8%EB%9E%9C%EB%93%9C-%EC%BA%90%EB%85%84-%ED%92%8D%EA%B2%BD-at-dusk-%EC%8B%9C%EC%B2%AD%EC%88%9C-%EB%A9%94%ED%8A%B8%EB%A1%9C%ED%8F%B4%EB%A6%AC%EC%8A%A4-%EC%82%AC%EB%A7%89.jpg?s=612x612&w=0&k=20&c=RrNLszZZYSCih6NiQ7n6PtZ1JxeZsI1D4DAklrUHX7s="),
-            imageDescription = "카탈로그 실습 구현용 이미지",
-            title = "해변 놀이 공원",
-            content = "놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다."
-        )
-    }
 }
 
 @Composable
-fun CatalogEx(catalogData: CatalogData) {
-    Column(modifier = Modifier.padding(20.dp)) {
-        Card {
-            Column(modifier = Modifier.padding(20.dp)) {
-                AsyncImage(
-                    model = catalogData.imageUri[0],
-                    contentDescription = catalogData.imageDescription
-                )
-                Spacer(modifier = Modifier.size(12.dp))
-                Text(text = catalogData.title, fontSize = 40.sp)
-                Spacer(modifier = Modifier.size(12.dp))
-                Text(text = catalogData.content)
-            }
-        }
-        Spacer(modifier = Modifier.size(20.dp))
-        Card {
-            Column(modifier = Modifier.padding(20.dp)) {
-                AsyncImage(
-                    model = catalogData.imageUri[1],
-                    contentDescription = catalogData.imageDescription,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
+fun CanvasEx() {
+    /*
+    Canvas 는 무언가 그릴 수 있는 공간
+    Modifier 를 반드시 설정해야 한다 (단점)
+    핸드폰에서는 매우 작게 뜨고, Preview 에서만 뜬다.
+    y 값이 커질수록 아래로 가고, y 값이 작아질수록 위로 간다.
+    */
+    Canvas(modifier = Modifier.size(20.dp)) {
+        // 시작(Offset)과 끝(Offset)의 x,y 좌표 지정
+        drawLine(Color.Red, Offset(30f, 10f), Offset(50f,10f))
+
+        // 매개변수: 색상, 반지름, 중앙 위치(Offset)
+        drawCircle(Color.Yellow, 10f, Offset(15f, 30f))
+
+        // Offset(위치)
+        drawRect(Color.Green, Offset(30f,40f), Size(10f, 10f))
+
+        /*
+         drawLine 을 활용
+         moveTo(2.01f, 21.0f) : 처음 위치
+         lineTo(23.0f, 12.0f) : 이쪽으로 이동
+         lineTo(2.01f, 3.0f)
+         lineTo(2.0f, 10.0f)
+         lineToRelative(15.0f, 2.0f) : 해당 거리만큼 이동
+         lineToRelative(-15.0f, 2.0f)
+         close() -> 처음 위치 이동
+         */
+        drawLine(Color.Blue, Offset(2.01f, 21.0f), Offset(23.0f, 12.0f))
+        drawLine(Color.Blue, Offset(23.0f, 12.0f), Offset(2.01f, 3.0f))
+        drawLine(Color.Blue, Offset(2.01f, 3.0f), Offset(2.0f, 10.0f))
+        drawLine(Color.Blue, Offset(2.0f, 10.0f), Offset(17.0f, 12.0f))
+        drawLine(Color.Blue, Offset(17.0f, 12.0f), Offset(2.0f, 14.0f))
+        drawLine(Color.Blue, Offset(2.0f, 14.0f), Offset(2.01f, 21.0f))
     }
 }
-
-data class CatalogData(
-    val imageUri: List<String>,
-    val imageDescription: String,
-    val title: String,
-    val content: String
-)
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        CatalogEx(MainActivity.catalogData)
+        CanvasEx()
     }
 }
