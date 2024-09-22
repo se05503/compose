@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    CustomDialogEx()
+                    DropDownMenuEx()
                 }
             }
         }
@@ -39,46 +39,23 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CustomDialogEx() {
-    var openDialog by remember { mutableStateOf(false) } // 초기값: false
-    var counter by remember { mutableStateOf(0) } // 초기값: 0
+fun DropDownMenuEx() {
+    var expandDropDownMenu by remember { mutableStateOf(false) }
+    var counter by remember { mutableStateOf(0) }
 
     Column {
-        Button(onClick = { openDialog = true }) {
-            Text("Open CustomDialog")
+        Button(onClick = { expandDropDownMenu = true }) {
+            Text(text = "Open DropDownMenu")
         }
-        Text("counter: $counter")
+        Text(text = "Counter: $counter")
     }
 
-    if(openDialog) {
-
-        Dialog(onDismissRequest = {
-            // 다이얼로그 바깥쪽을 클릭했을 떄의 이벤트 -> 다이얼로그를 dismiss 한다.
-            openDialog = false
-        }) {
-            // content -> 다이얼로그의 모양(형태) 및 기능을 작성하는 곳
-            Surface() {
-                // 컨텐츠가 있는 영역들은 Surface 로 맨바깥쪽에 감싸주는 것이 좋다.
-                // 배경 색상을 제공해서 하얀색 배경이 만들어짐
-                Column(modifier = Modifier.padding(8.dp)) {
-                    Text("Click the button.\n* Clicking +1 increases the value.\n* Clicking -1, decreases the value.")
-                    Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                        Button(onClick = {
-                            openDialog = false
-                        }) {
-                            Text(text = "Cancel")
-                        }
-                        Spacer(modifier = Modifier.size(4.dp))
-                        Button(onClick = { counter-- }) {
-                            Text(text = "-1")
-                        }
-                        Spacer(modifier = Modifier.size(4.dp))
-                        Button(onClick = { counter++ }) {
-                            Text(text = "+1")
-                        }
-                    }
-                }
-            }
+    DropdownMenu(expanded = expandDropDownMenu, onDismissRequest = { expandDropDownMenu = false }) {
+        DropdownMenuItem(onClick = { counter++ }) {
+            Text(text = "Counter Increase")
+        }
+        DropdownMenuItem(onClick = { counter-- }) {
+            Text(text = "Counter decrease")
         }
     }
 }
@@ -87,6 +64,6 @@ fun CustomDialogEx() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        CustomDialogEx()
+        DropDownMenuEx()
     }
 }
