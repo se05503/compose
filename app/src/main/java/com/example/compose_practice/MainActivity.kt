@@ -3,11 +3,14 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +28,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                CatalogEx(itemList = itemDatas)
+                // Surface 로 감싸주는 것이 좋다
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    CatalogEx(itemList = itemDatas)
+                }
             }
         }
     }
@@ -33,13 +42,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Item(ItemData: ItemData) {
-    Card(elevation = 10.dp) {
-        Column(modifier = Modifier.padding(20.dp)) {
+    Card(
+        elevation = 10.dp,
+        modifier = Modifier.padding(10.dp) // padding 속성이 없으면 공간이 없어 elevation(그림자 효과)이 보이지 않는다.
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp)
+        ) {
             Image(
                 painter = painterResource(id = ItemData.id),
-                contentDescription = ItemData.title)
+                contentDescription = ItemData.title) // 접근성을 위해 설정
             Spacer(modifier = Modifier.size(12.dp))
-            Text(text = ItemData.title, fontSize = 40.sp, style = TextStyle.Default)
+            Text(text = ItemData.title, fontSize = 40.sp, style = MaterialTheme.typography.h4)
             Spacer(modifier = Modifier.size(12.dp))
             Text(text = ItemData.description)
         }
@@ -52,7 +66,7 @@ fun ItemPreview() {
     ComposePracticeTheme {
         Item(
             ItemData(
-                id = R.drawable.a1,
+                id = R.drawable.a1, // drawable.a1 -> ?
                 title = "해변 놀이 공원",
                 description = "놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다. 놀이 공원 설명입니다."
             )
@@ -62,7 +76,13 @@ fun ItemPreview() {
 
 @Composable
 fun CatalogEx(itemList: List<ItemData>) {
+    // Lazy : 필요할 때만 보여주겠다.
+    // Column : 세로 방향
     LazyColumn {
+//         수동으로 한개를 넣는 경우 -> items 대신 item 사용하면 됨
+//        item {
+//            Item(itemList[5])
+//        }
         items(itemList) { data ->
             Item(data)
         }
@@ -77,7 +97,7 @@ fun DefaultPreview() {
     }
 }
 
-val itemDatas : List<ItemData> = listOf(
+val itemDatas = listOf(
     ItemData(R.drawable.a1,"첫번째 이미지", "첫번째 이미지 설명"),
     ItemData(R.drawable.a2,"두번째 이미지","두번째 이미지 설명"),
     ItemData(R.drawable.a3,"세번째 이미지","세번째 이미지 설명"),
@@ -92,7 +112,7 @@ val itemDatas : List<ItemData> = listOf(
 
 
 data class ItemData(
-    val id: Int,
+    @DrawableRes val id: Int, // @DrawableRes -> ?
     val title: String,
     val description: String
 )
