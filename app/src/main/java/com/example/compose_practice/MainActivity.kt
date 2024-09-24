@@ -36,37 +36,44 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PyeongToSquareMeter() {
+    // State Hoisting
     var pyeong by rememberSaveable { mutableStateOf("23") }
     var squaremeter by rememberSaveable { mutableStateOf((23 * 3.306).toString()) }
+    PyeongToSquareMeterStateless(pyeong = pyeong, squareMeter = squaremeter) {
+        // 후행 람다로 빼기
+        if(it.isBlank()) {
+            pyeong = ""
+            squaremeter = ""
+            return@PyeongToSquareMeterStateless
+        } else {
+            val numericValue = it.toFloatOrNull() ?: return@PyeongToSquareMeterStateless
+            pyeong = numericValue.toString()
+            squaremeter = (numericValue*3.306).toString()
+        }
+    }
+}
 
+@Composable
+fun PyeongToSquareMeterStateless(
+    pyeong: String,
+    squareMeter: String,
+    onPyeongChanged: (String) -> Unit // 평이 바뀌었을 때 호출할 콜백 함수
+) {
+    /*
+    상태를 가지고 있지 않아서 상태를 바꾸지 않는다.
+    onPyeongChanged 통해 상위 계층에서 상태를 바꾸도록 위임함
+    해당 함수는 상태에 대해서 알지 못한다.
+     */
     Column(modifier = Modifier.padding(16.dp)) {
-        /*
-        jetpack compose 는 상태가 바뀌지 않으면 업데이트가 되지 않는다.
-        따라서 값이 수정될려면 상태가 바뀌어야한다.
-        configuration 이 바뀌는 대표적인 경우 = rotation (회전)
-        저장공간의 한계로 모든 값을 rememberSaveable 로 하는 것은 좋지 않다. (변수가 2개 정도면 괜찮음)
-        remember 와 rememberSaveable 만 근본적인 method 이고 나머지는 utility 이다.
-         */
         OutlinedTextField(
             value = pyeong,
-            onValueChange = {
-                if(it.isBlank()) {
-                    pyeong = ""
-                    squaremeter = ""
-                    return@OutlinedTextField // 이게 무슨 의미지?
-                } else {
-                    // float(실수)으로 바꿀 수 없는 것은 null 로 return 하겠다. null 이면 강제종료하겠다.
-                    val numericValue = it.toFloatOrNull() ?: return@OutlinedTextField
-                    pyeong = numericValue.toString()
-                    squaremeter = (numericValue*3.306).toString()
-                }
-            },
+            onValueChange = onPyeongChanged,
             label = {
                 Text("평")
             }
         )
         OutlinedTextField(
-            value = squaremeter,
+            value = squareMeter,
             onValueChange = {},
             label = {
                 Text("제곱미터")
