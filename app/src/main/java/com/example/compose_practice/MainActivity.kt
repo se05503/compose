@@ -17,10 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
 class MainActivity : ComponentActivity() {
@@ -57,38 +59,51 @@ data class CardItem(
 
 @Composable
 fun ConstraintLayoutEx(cardItem: CardItem) {
+
+    val constraintSet = ConstraintSet {
+        val image = createRefFor("image")
+        val author = createRefFor("author")
+        val description = createRefFor("description")
+
+        constrain(image) {
+            centerVerticallyTo(parent)
+        }
+
+        constrain(author) {
+            start.linkTo(image.end, margin = 6.dp)
+            top.linkTo(parent.top)
+        }
+
+        constrain(description) {
+            top.linkTo(author.bottom)
+            start.linkTo(author.start)
+        }
+    }
+
     Card(
         modifier = Modifier.padding(10.dp),
         elevation = 12.dp
     ) {
         ConstraintLayout(
+            constraintSet,
             modifier = Modifier.padding(12.dp) // dp 값 커지면 레이아웃 card 밖으로 튀어나감. text 를 card 안에 넣었는데 왜 밖으로 튀어나가는지 모르겠음
         ) {
-            val (image, author, description) = createRefs()
             Image(
                 painter = painterResource(id = cardItem.image),
                 contentDescription = cardItem.imageDescription,
                 modifier = Modifier
                     .size(52.dp)
                     .clip(CircleShape)
-                    .constrainAs(image) {
-                        centerVerticallyTo(parent)
-                    },
+                    .layoutId("image"),
                 contentScale = ContentScale.Crop
             )
             Text(
                 text = cardItem.author,
-                modifier = Modifier.constrainAs(author) {
-                    start.linkTo(image.end, margin = 6.dp)
-                    top.linkTo(parent.top)
-                }
+                modifier = Modifier.layoutId("author")
             )
             Text(
                 text = cardItem.description,
-                modifier = Modifier.constrainAs(description) {
-                    top.linkTo(author.bottom)
-                    start.linkTo(author.start)
-                }
+                modifier = Modifier.layoutId("description")
             )
         }
     }
