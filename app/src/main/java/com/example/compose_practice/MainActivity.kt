@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -29,7 +30,6 @@ class MainActivity : ComponentActivity() {
             ComposePracticeTheme {
                 // Surface 로 감싸주는 것이 좋다.
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
                     ConstraintLayoutEx(cardItem)
@@ -57,17 +57,14 @@ data class CardItem(
 
 @Composable
 fun ConstraintLayoutEx(cardItem: CardItem) {
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (card, image, author, description) = createRefs()
-        Card(
-            modifier = Modifier
-                .padding(10.dp)
-                .constrainAs(card) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                },
-            elevation = 8.dp
+    Card(
+        modifier = Modifier.padding(10.dp),
+        elevation = 12.dp
+    ) {
+        ConstraintLayout(
+            modifier = Modifier.padding(12.dp) // dp 값 커지면 레이아웃 card 밖으로 튀어나감. text 를 card 안에 넣었는데 왜 밖으로 튀어나가는지 모르겠음
         ) {
+            val (image, author, description) = createRefs()
             Image(
                 painter = painterResource(id = cardItem.image),
                 contentDescription = cardItem.imageDescription,
@@ -75,16 +72,15 @@ fun ConstraintLayoutEx(cardItem: CardItem) {
                     .size(52.dp)
                     .clip(CircleShape)
                     .constrainAs(image) {
-                        start.linkTo(card.start, margin = 12.dp)
-                        top.linkTo(card.top, margin = 12.dp)
+                        centerVerticallyTo(parent)
                     },
                 contentScale = ContentScale.Crop
             )
             Text(
                 text = cardItem.author,
                 modifier = Modifier.constrainAs(author) {
-                    start.linkTo(image.end, margin = 12.dp)
-                    top.linkTo(image.top)
+                    start.linkTo(image.end, margin = 6.dp)
+                    top.linkTo(parent.top)
                 }
             )
             Text(
