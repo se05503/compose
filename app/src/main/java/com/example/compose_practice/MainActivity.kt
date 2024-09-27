@@ -3,6 +3,7 @@ package com.example.compose_practice
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalAnimationApi::class) // OptIn : 사용하겠다, OptOut : 사용하지 않겠다
 @Composable
 fun AnimationEx() {
     var isTextVisible by remember { mutableStateOf(true) }
@@ -44,7 +46,12 @@ fun AnimationEx() {
     Column(
         modifier = Modifier.padding(20.dp)
     ) {
-        Text(text = "Hello World!")
+        AnimatedVisibility(
+            visible = isTextVisible,
+            enter = slideInVertically()
+        ) {
+            Text(text = "Hello World!")
+        }
         Row(
             // Row의 Modifier에서 selectable 속성으로 해당 row를 눌렀을 때 선택 가능하도록 함
             Modifier.selectable(
