@@ -18,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,11 +48,13 @@ fun AnimationEx() {
     var isTextVisible by remember { mutableStateOf(true) }
     var isBackgroundWhite by remember { mutableStateOf(true) }
     val backgroundColor by animateColorAsState(targetValue = if (isBackgroundWhite) Color.White else Color.Red)
+    val alpha by animateFloatAsState(targetValue = if (isBackgroundWhite) 1.0f else 0.3f)
 
     Column(
         modifier = Modifier
             .padding(20.dp)
             .background(backgroundColor)
+            .alpha(alpha)
     ) {
         AnimatedVisibility(
             visible = isTextVisible,
