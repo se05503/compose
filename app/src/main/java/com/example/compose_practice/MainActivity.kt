@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
@@ -43,12 +45,14 @@ class MainActivity : ComponentActivity() {
 fun AnimationEx() {
     var isTextVisible by remember { mutableStateOf(true) }
     var isBackgroundWhite by remember { mutableStateOf(true) }
+    val backgroundColor = Color.LightGray
     Column(
-        modifier = Modifier.padding(20.dp)
+        modifier = Modifier.padding(20.dp).background(backgroundColor)
     ) {
         AnimatedVisibility(
             visible = isTextVisible,
-            enter = slideInVertically()
+            enter = expandHorizontally(),
+            exit = shrinkHorizontally()
         ) {
             Text(text = "Hello World!")
         }
