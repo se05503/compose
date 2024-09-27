@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,9 +46,12 @@ class MainActivity : ComponentActivity() {
 fun AnimationEx() {
     var isTextVisible by remember { mutableStateOf(true) }
     var isBackgroundWhite by remember { mutableStateOf(true) }
-    val backgroundColor = Color.LightGray
+    val backgroundColor by animateColorAsState(targetValue = if (isBackgroundWhite) Color.White else Color.Red)
+
     Column(
-        modifier = Modifier.padding(20.dp).background(backgroundColor)
+        modifier = Modifier
+            .padding(20.dp)
+            .background(backgroundColor)
     ) {
         AnimatedVisibility(
             visible = isTextVisible,
