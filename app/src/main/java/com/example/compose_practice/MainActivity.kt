@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
@@ -44,19 +45,34 @@ fun AnimationEx() {
         modifier = Modifier.padding(20.dp)
     ) {
         Text(text = "Hello World!")
-        Row {
+        Row(
+            // Row의 Modifier에서 selectable 속성으로 해당 row를 눌렀을 때 선택 가능하도록 함
+            Modifier.selectable(
+                selected = isTextVisible,
+                onClick = {
+                    isTextVisible = true
+                }
+            ),
+            verticalAlignment = Alignment.CenterVertically // Row 안에 들어가는 요소에 대한 배치(?)
+        ) {
             RadioButton(
-                selected = true, // text 보이게 하기
+                selected = isTextVisible, // text 보이게 하기
                 onClick = { isTextVisible = true }
             )
             Text(
                 text = "Hello World Appears",
-                modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
-        Row {
+        Row(
+            Modifier.selectable(
+                selected = !isTextVisible,
+                onClick = {
+                    isTextVisible = false
+                }
+            )
+        ) {
             RadioButton(
-                selected = false, // text 안보이게 하기
+                selected = !isTextVisible, // text 안보이게 하기
                 onClick = { isTextVisible = false }
             )
             Text(
@@ -65,18 +81,28 @@ fun AnimationEx() {
             )
         }
         Text(text = "Change the background color")
-        Row {
-            RadioButton(selected = true, onClick = { isBackgroundWhite = true })
+        Row(
+            Modifier.selectable(
+                selected = isBackgroundWhite,
+                onClick = { isBackgroundWhite = true }
+            ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(selected = isBackgroundWhite, onClick = { isBackgroundWhite = true })
             Text(
                 text = "White",
-                modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
-        Row {
-            RadioButton(selected = false, onClick = { isBackgroundWhite = false })
+        Row(
+            Modifier.selectable(
+                selected = !isBackgroundWhite,
+                onClick = { isBackgroundWhite = false }
+            ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(selected = !isBackgroundWhite, onClick = { isBackgroundWhite = false })
             Text(
                 text = "Red",
-                modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
     }
