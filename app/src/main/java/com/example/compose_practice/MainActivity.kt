@@ -6,10 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
@@ -34,94 +32,47 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    AnimationEx()
+                    AnimationTwoEx()
                 }
             }
         }
     }
 }
 
-
-@OptIn(ExperimentalAnimationApi::class) // OptIn : 사용하겠다, OptOut : 사용하지 않겠다
 @Composable
-fun AnimationEx() {
-    var isTextVisible by remember { mutableStateOf(true) }
-    var isBackgroundWhite by remember { mutableStateOf(true) }
-    val backgroundColor by animateColorAsState(targetValue = if (isBackgroundWhite) Color.White else Color.Red)
-    val alpha by animateFloatAsState(targetValue = if (isBackgroundWhite) 1.0f else 0.3f)
-
-    Column(
-        modifier = Modifier
-            .padding(20.dp)
-            .background(backgroundColor)
-            .alpha(alpha)
-    ) {
-        AnimatedVisibility(
-            visible = isTextVisible,
-            enter = expandHorizontally(),
-            exit = shrinkHorizontally()
-        ) {
-            Text(text = "Hello World!")
-        }
+fun AnimationTwoEx() {
+    var isNormalMode by remember { mutableStateOf(true) }
+    Column {
         Row(
-            // Row의 Modifier에서 selectable 속성으로 해당 row를 눌렀을 때 선택 가능하도록 함
-            Modifier.selectable(
-                selected = isTextVisible,
-                onClick = {
-                    isTextVisible = true
-                }
-            ),
-            verticalAlignment = Alignment.CenterVertically // Row 안에 들어가는 요소에 대한 배치(?)
-        ) {
-            RadioButton(
-                selected = isTextVisible, // text 보이게 하기
-                onClick = { isTextVisible = true }
-            )
-            Text(
-                text = "Hello World Appears",
-            )
-        }
-        Row(
-            Modifier.selectable(
-                selected = !isTextVisible,
-                onClick = {
-                    isTextVisible = false
-                }
-            )
-        ) {
-            RadioButton(
-                selected = !isTextVisible, // text 안보이게 하기
-                onClick = { isTextVisible = false }
-            )
-            Text(
-                text = "Hello World Disappears",
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
-        }
-        Text(text = "Change the background color")
-        Row(
-            Modifier.selectable(
-                selected = isBackgroundWhite,
-                onClick = { isBackgroundWhite = true }
+            modifier = Modifier.selectable(
+                selected = isNormalMode, onClick = { isNormalMode = true }
             ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            RadioButton(selected = isBackgroundWhite, onClick = { isBackgroundWhite = true })
-            Text(
-                text = "White",
-            )
+            RadioButton(selected = isNormalMode, onClick = { isNormalMode = true })
+            Text(text = "Normal Mode")
         }
         Row(
-            Modifier.selectable(
-                selected = !isBackgroundWhite,
-                onClick = { isBackgroundWhite = false }
+            modifier = Modifier.selectable(
+                selected = !isNormalMode, onClick = { isNormalMode = false }
             ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            RadioButton(selected = !isBackgroundWhite, onClick = { isBackgroundWhite = false })
-            Text(
-                text = "Red",
-            )
+            RadioButton(selected = !isNormalMode, onClick = { isNormalMode = false })
+            Text(text = "Dark Mode")
+        }
+        Row {
+            Box(
+                modifier = Modifier.size(20.dp).background(Color.Red),
+            ) {
+                Text(text = "1")
+            }
+            Box(modifier = Modifier.size(20.dp).background(Color.Magenta)) {
+                Text(text = "2")
+            }
+            Box(modifier = Modifier.size(20.dp).background(Color.Blue)) {
+                Text(text = "3")
+            }
         }
     }
 }
@@ -130,6 +81,25 @@ fun AnimationEx() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        AnimationEx()
+        AnimationTwoEx()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RadioButtonWithTextPreview() {
+    var isRadioButtonChecked by remember { mutableStateOf(true) }
+    Row(
+        modifier = Modifier.selectable(
+            selected = isRadioButtonChecked,
+            onClick = { isRadioButtonChecked = true }
+        ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(selected = isRadioButtonChecked, onClick = { isRadioButtonChecked = true })
+        Text(
+            text = "Radio Button",
+            color = Color.Red
+        )
     }
 }
