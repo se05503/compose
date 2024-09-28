@@ -43,23 +43,11 @@ class MainActivity : ComponentActivity() {
 fun AnimationTwoEx() {
     var isNormalMode by remember { mutableStateOf(true) }
     Column {
-        Row(
-            modifier = Modifier.selectable(
-                selected = isNormalMode, onClick = { isNormalMode = true }
-            ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RadioButton(selected = isNormalMode, onClick = { isNormalMode = true })
-            Text(text = "Normal Mode")
+        RadioButtonWithText(text = "Normal Mode", selected = isNormalMode) {
+            isNormalMode = true
         }
-        Row(
-            modifier = Modifier.selectable(
-                selected = !isNormalMode, onClick = { isNormalMode = false }
-            ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RadioButton(selected = !isNormalMode, onClick = { isNormalMode = false })
-            Text(text = "Dark Mode")
+        RadioButtonWithText(text = "Dark Mode", selected = !isNormalMode) {
+            isNormalMode = false
         }
         Row {
             Box(
@@ -67,6 +55,8 @@ fun AnimationTwoEx() {
                     .size(20.dp)
                     .background(Color.Red),
             ) {
+                // slotApi
+                // 일반적으로 slotApi(lambda block) 를 제공하는 composable 함수는 마지막 parameter 가 content 인 경우가 많다.
                 Text(text = "1")
             }
             Box(modifier = Modifier
@@ -94,19 +84,21 @@ fun DefaultPreview() {
 @Composable
 fun RadioButtonWithText(
     text: String,
-    color: Color,
+    color: Color = Color.Black, // color 값을 설정하지 않았을 때의 기본값
     selected: Boolean,
     onClick: () -> Unit
+    // content 는 받지 않는다.
 ) {
-    var isRadioButtonChecked by remember { mutableStateOf(selected) }
+    // Row 에 selectable 을 설정했다고 RadioButton 에 속성을 설정하지 않으면 안된다. (작동하지 않는다.)
+    // 즉, RadioButton 은 필수적으로 세팅해야하고, Row 는 클릭 설정을 세팅해도 되고 안해도 된다.
     Row(
         modifier = Modifier.selectable(
-            selected = isRadioButtonChecked,
-            onClick = { isRadioButtonChecked = true }
+            selected = selected,
+            onClick = onClick
         ),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically // row 안에 들어가는 요소에 대한 레이아웃 배치
     ) {
-        RadioButton(selected = isRadioButtonChecked, onClick = { isRadioButtonChecked = true })
+        RadioButton(selected = selected, onClick = onClick)
         Text(
             text = text,
             color = color
