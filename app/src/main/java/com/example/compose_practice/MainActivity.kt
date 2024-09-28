@@ -63,14 +63,20 @@ fun AnimationTwoEx() {
         }
         Row {
             Box(
-                modifier = Modifier.size(20.dp).background(Color.Red),
+                modifier = Modifier
+                    .size(20.dp)
+                    .background(Color.Red),
             ) {
                 Text(text = "1")
             }
-            Box(modifier = Modifier.size(20.dp).background(Color.Magenta)) {
+            Box(modifier = Modifier
+                .size(20.dp)
+                .background(Color.Magenta)) {
                 Text(text = "2")
             }
-            Box(modifier = Modifier.size(20.dp).background(Color.Blue)) {
+            Box(modifier = Modifier
+                .size(20.dp)
+                .background(Color.Blue)) {
                 Text(text = "3")
             }
         }
@@ -85,10 +91,14 @@ fun DefaultPreview() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun RadioButtonWithTextPreview() {
-    var isRadioButtonChecked by remember { mutableStateOf(true) }
+fun RadioButtonWithText(
+    text: String,
+    color: Color,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    var isRadioButtonChecked by remember { mutableStateOf(selected) }
     Row(
         modifier = Modifier.selectable(
             selected = isRadioButtonChecked,
@@ -98,8 +108,19 @@ fun RadioButtonWithTextPreview() {
     ) {
         RadioButton(selected = isRadioButtonChecked, onClick = { isRadioButtonChecked = true })
         Text(
-            text = "Radio Button",
-            color = Color.Red
+            text = text,
+            color = color
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RadioButtonWithTextPreview() {
+    RadioButtonWithText(
+        text = "Radio Button",
+        color = Color.Red,
+        selected = true,
+        onClick = { }
+    )
 }
