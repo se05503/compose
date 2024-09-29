@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -39,35 +41,106 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/*
+step1 : 변수 생성
+step2 : 변수를 적용
+ */
 @Composable
 fun AnimationTwoEx() {
     var isNormalMode by remember { mutableStateOf(true) }
-    Column {
-        RadioButtonWithText(text = "Normal Mode", selected = isNormalMode) {
+    // label : 문제가 발생했을 때 label 을 확인함. 도구에서 디버깅을 하기 위한 label.
+    // 안붙여도 문법적으로 오류는 없지만 붙이는 것이 좋음
+    val transition = updateTransition(targetState = isNormalMode, label = "Animation's Transition")
+    // State<Color> -> Color (delegated property)
+    val backgroundColor by transition.animateColor(label = "background color animation") { state ->
+        when(state) {
+            true -> Color.White
+            false -> Color.Black
+        }
+    }
+    val textColor by transition.animateColor(label = "text color animation") { state ->
+        when(state) {
+            true -> Color.Black
+            false -> Color.White
+        }
+    }
+    val alpha by transition.animateFloat(label = "alpha animation") { state ->
+        when(state) {
+            true -> 0.5f
+            false -> 1f
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .background(backgroundColor)
+            .alpha(alpha)
+    ) {
+        RadioButtonWithText(
+            text = "Normal Mode",
+            selected = isNormalMode,
+            color = textColor
+        ) {
             isNormalMode = true
         }
-        RadioButtonWithText(text = "Dark Mode", selected = !isNormalMode) {
+        RadioButtonWithText(
+            text = "Dark Mode",
+            selected = !isNormalMode,
+            color = textColor
+        ) {
             isNormalMode = false
         }
-        Row {
-            Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(Color.Red),
-            ) {
-                // slotApi
-                // 일반적으로 slotApi(lambda block) 를 제공하는 composable 함수는 마지막 parameter 가 content 인 경우가 많다.
-                Text(text = "1")
-            }
-            Box(modifier = Modifier
-                .size(20.dp)
-                .background(Color.Magenta)) {
-                Text(text = "2")
-            }
-            Box(modifier = Modifier
-                .size(20.dp)
-                .background(Color.Blue)) {
-                Text(text = "3")
+        Crossfade(targetState = isNormalMode) { state ->
+            when(state) {
+                true -> {
+                    Row {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .background(Color.Red),
+                        ) {
+                            // slotApi
+                            // 일반적으로 slotApi(lambda block) 를 제공하는 composable 함수는 마지막 parameter 가 content 인 경우가 많다.
+                            Text(text = "1")
+                        }
+                        Box(modifier = Modifier
+                            .size(20.dp)
+                            .background(Color.Magenta)) {
+                            Text(text = "2")
+                        }
+                        Box(modifier = Modifier
+                            .size(20.dp)
+                            .background(Color.Blue)) {
+                            Text(text = "3")
+                        }
+                    }
+                }
+                false -> {
+                    Column {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .background(Color.Red),
+                        ) {
+                            // slotApi
+                            // 일반적으로 slotApi(lambda block) 를 제공하는 composable 함수는 마지막 parameter 가 content 인 경우가 많다.
+                            Text(text = "A")
+                        }
+                        Box(modifier = Modifier
+                            .size(20.dp)
+                            .background(Color.Magenta)) {
+                            Text(text = "B")
+                        }
+                        Box(modifier = Modifier
+                            .size(20.dp)
+                            .background(Color.Blue)) {
+                            Text(text = "C")
+                        }
+                        Surface(modifier = Modifier.background(Color.White)) {
+                            Text(text = "Text 를 Surface 로 감싸주기")
+                        }
+                    }
+                }
             }
         }
     }
