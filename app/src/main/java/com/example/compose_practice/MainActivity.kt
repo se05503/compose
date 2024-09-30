@@ -42,22 +42,17 @@ fun DefaultPreview() {
 }
 
 var isInputButtonClicked by mutableStateOf(false)
+var todoContent by mutableStateOf("")
 
 @Composable
 fun ToDoListEx() {
     Column {
         val todoThing = ToDoInputItem()
         if(isInputButtonClicked) { // UI 가 생겼다가 다시 사라지는 부분 코드 (추정)
-            if(todoThing == "") {
-                // 스낵바 띄우기
-                val scaffoldState = rememberScaffoldState()
-                LaunchedEffect(scaffoldState.snackbarHostState) {
-                    scaffoldState.snackbarHostState.showSnackbar("내용을 입력하세요!")
-                }
-            } else {
-                registerToDoList(todoThing)
-                isInputButtonClicked = false // recomposition 을 발생시키기 위해 값을 다시 바꿈
-            }
+            // 버튼 이벤트 발생
+            registerToDoList(todoThing)
+            isInputButtonClicked = false // recomposition 을 발생시키기 위해 값을 다시 바꿈
+            todoContent = ""
         } else {
             LazyColumn {
                 items(todoList) { todo ->
@@ -82,7 +77,7 @@ fun registerToDoList(todoThing: String) {
 @Composable
 fun ToDoInputItem(): String {
     // 입력하기 전 단일 List UI
-    var todoContent by remember { mutableStateOf("") }
+
     Card(
         elevation = 5.dp,
         modifier = Modifier.fillMaxWidth()
