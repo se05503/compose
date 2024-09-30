@@ -48,8 +48,16 @@ fun ToDoListEx() {
     Column {
         val todoThing = ToDoInputItem()
         if(isInputButtonClicked) { // UI 가 생겼다가 다시 사라지는 부분 코드 (추정)
-            registerToDoList(todoThing)
-            isInputButtonClicked = false // recomposition 을 발생시키기 위해 값을 다시 바꿈
+            if(todoThing == "") {
+                // 스낵바 띄우기
+                val scaffoldState = rememberScaffoldState()
+                LaunchedEffect(scaffoldState.snackbarHostState) {
+                    scaffoldState.snackbarHostState.showSnackbar("내용을 입력하세요!")
+                }
+            } else {
+                registerToDoList(todoThing)
+                isInputButtonClicked = false // recomposition 을 발생시키기 위해 값을 다시 바꿈
+            }
         } else {
             LazyColumn {
                 items(todoList) { todo ->
@@ -59,6 +67,7 @@ fun ToDoListEx() {
         }
     }
 }
+
 
 @Composable
 fun registerToDoList(todoThing: String) {
