@@ -1,29 +1,18 @@
 package com.example.compose_practice
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.*
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.compose.ui.unit.sp
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,53 +24,113 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    EffectEx()
+                    ToDoListEx()
                 }
             }
         }
     }
 }
 
-@Composable
-fun EffectEx(lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
-    val scaffoldState = rememberScaffoldState()
-    LaunchedEffect(scaffoldState.snackbarHostState) {
-        scaffoldState.snackbarHostState.showSnackbar("Launched Effect practicing")
-    }
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            // SAM(Single Abstract Method) 방식
-            // 단일 abstract function 을 가진 interface(LifecycleEventObserver)는
-            // 람다 형태로 추상 함수의 매개변수를 받아올 수 있다.
-            when(event) {
-                Lifecycle.Event.ON_CREATE -> Log.d("DisposableEffect", "ON_CREATE")
-                Lifecycle.Event.ON_START -> Log.d("DisposableEffect", "ON_START")
-                Lifecycle.Event.ON_STOP -> Log.d("DisposableEffect", "ON_STOP")
-                Lifecycle.Event.ON_PAUSE -> Log.d("DisposableEffect", "ON_PAUSE")
-                Lifecycle.Event.ON_RESUME -> Log.d("DisposableEffect", "ON_RESUME")
-                Lifecycle.Event.ON_DESTROY -> Log.d("DisposableEffect", "ON_DESTROY")
-                else -> Log.d("DisposableEffect", "ELSE")
-            }
-        }
-        // 할당
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            // 해제
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-    Scaffold(
-        scaffoldState = scaffoldState
-    ) {
-
-    }
-}
+val todoList = ArrayList<String>()
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        EffectEx()
+        ToDoListEx()
     }
 }
+
+@Composable
+fun ToDoListEx() {
+    Column {
+        ToDoInputItem()
+        ToDoItem(todo = "점심 약속")
+    }
+}
+
+@Composable
+fun ToDoInputItem() {
+    // 입력하기 전 단일 List UI
+    var todoContent by remember { mutableStateOf("To do") }
+    Card(
+        elevation = 5.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(10.dp)
+        ) {
+            OutlinedTextField(
+                value = todoContent,
+                onValueChange = {
+                    todoContent = it },
+                label = {
+                    Text(text = "What's your plan?")
+                }
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Button(onClick = {
+                todoList.add(todoContent)
+                // @Composable invocations can only happen from the context of a @Composable function
+                // onClick parameter doesn't accept a composable function
+                LazyColumn {
+                    items(todoList) { todo ->
+                        ToDoItem(todo)
+                    }
+                }
+            }) {
+                Text(
+                    text = "입력"
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ToDoInputPreview() {
+    ToDoInputItem()
+}
+
+@Composable
+fun ToDoItem(todo: String) {
+    // 입력한 후 단일 List UI
+    var isFinished by remember { mutableStateOf(false) }
+    Card(
+        elevation = 5.dp,
+        modifier = Modifier.padding(5.dp) // padding 을 넣어줘야 elevation 효과를 확인할 수 있다.
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = todo,
+                modifier = Modifier.weight(1f)
+            )
+            Text(text = "완료")
+            Checkbox(checked = isFinished, onCheckedChange = {
+                isFinished = !isFinished
+            })
+            Button(onClick = { /*TODO*/ }) {
+                Text("수정")
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+            Button(onClick = { /*TODO*/ }) {
+                Text("삭제")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ToDoItemPreview() {
+    ToDoItem("점심 약속")
+}
+
 
