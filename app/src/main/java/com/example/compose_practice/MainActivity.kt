@@ -41,16 +41,31 @@ fun DefaultPreview() {
     }
 }
 
+var isInputButtonClicked by mutableStateOf(false)
+
 @Composable
 fun ToDoListEx() {
     Column {
-        ToDoInputItem()
-        ToDoItem(todo = "점심 약속")
+        val todoThing = ToDoInputItem()
+        if(isInputButtonClicked) {
+            registerToDoList(todoThing)
+            isInputButtonClicked = false // recomposition 을 발생시키기 위해 값을 다시 바꿈
+        }
     }
 }
 
 @Composable
-fun ToDoInputItem() {
+fun registerToDoList(todoThing: String) {
+    todoList.add(todoThing)
+    LazyColumn {
+        items(todoList) { todo ->
+            ToDoItem(todo)
+        }
+    }
+}
+
+@Composable
+fun ToDoInputItem(): String {
     // 입력하기 전 단일 List UI
     var todoContent by remember { mutableStateOf("To do") }
     Card(
@@ -71,14 +86,7 @@ fun ToDoInputItem() {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Button(onClick = {
-                todoList.add(todoContent)
-                // @Composable invocations can only happen from the context of a @Composable function
-                // onClick parameter doesn't accept a composable function
-                LazyColumn {
-                    items(todoList) { todo ->
-                        ToDoItem(todo)
-                    }
-                }
+                isInputButtonClicked = true
             }) {
                 Text(
                     text = "입력"
@@ -86,6 +94,7 @@ fun ToDoInputItem() {
             }
         }
     }
+    return todoContent
 }
 
 @Preview(showBackground = true)
