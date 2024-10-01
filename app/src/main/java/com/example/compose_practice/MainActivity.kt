@@ -1,6 +1,7 @@
 package com.example.compose_practice
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -31,8 +32,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-val todoList = ArrayList<String>()
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
@@ -41,6 +40,7 @@ fun DefaultPreview() {
     }
 }
 
+val todoList = ArrayList<String>()
 var isInputButtonClicked by mutableStateOf(false)
 var todoContent by mutableStateOf("")
 
@@ -48,12 +48,27 @@ var todoContent by mutableStateOf("")
 fun ToDoListEx() {
     Column {
         val todoThing = ToDoInputItem()
-        if(isInputButtonClicked) { // UI 가 생겼다가 다시 사라지는 부분 코드 (추정)
-            // 버튼 이벤트 발생
-            registerToDoList(todoThing)
-            isInputButtonClicked = false // recomposition 을 발생시키기 위해 값을 다시 바꿈
-            todoContent = ""
+        if(isInputButtonClicked) {
+            // 할 일 등록
+            if(todoThing == "") {
+                val scaffoldState = rememberScaffoldState()
+                LaunchedEffect(scaffoldState.snackbarHostState) {
+                    scaffoldState.snackbarHostState.showSnackbar("내용을 입력해주세요!")
+                }
+                Scaffold(
+                    scaffoldState = scaffoldState
+                ) {
+                    // 얘 넣으니까 "코드를 저렇게 넣었는데 왜 안깜빡이지?" 에 대한 의문점이 풀림 (다시 예상한대로 동작)
+                    // 근데 얘를 왜 넣는거?
+                }
+                isInputButtonClicked = false
+            } else {
+                registerToDoList(todoThing) // 아쉬운 점: 버튼을 누를 때마다 새로 추가된 리스트 뿐만이 아니라 처음 할 일 리스트부터 다시 ui 를 그림
+                isInputButtonClicked = false // recomposition 을 발생시키기 위해 값을 다시 바꿈
+                todoContent = ""
+            }
         } else {
+            // 동작은 하지만 매우 마음에 들지 않는 코드, 하지만 이렇게 하지 않으면 UI 가 사라진다.
             LazyColumn {
                 items(todoList) { todo ->
                     ToDoItem(todo)
@@ -77,7 +92,6 @@ fun registerToDoList(todoThing: String) {
 @Composable
 fun ToDoInputItem(): String {
     // 입력하기 전 단일 List UI
-
     Card(
         elevation = 5.dp,
         modifier = Modifier.fillMaxWidth()
