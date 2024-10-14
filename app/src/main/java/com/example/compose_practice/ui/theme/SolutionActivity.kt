@@ -39,17 +39,36 @@ fun DefaultPreview() {
 }
 
 @Composable
+fun showSnackBar() {
+    val scaffoldState = rememberScaffoldState()
+    LaunchedEffect(scaffoldState.snackbarHostState) {
+        scaffoldState.snackbarHostState.showSnackbar("내용을 입력해주세요!")
+    }
+    Scaffold(scaffoldState = scaffoldState) {
+
+    }
+}
+
+@Composable
 fun TopLevel() {
     val (text, setText) = remember { mutableStateOf("") }
     // 해당 리스트에 항목이 추가, 삭제, 변경(값이 변경되는 것이 아닌 항목 자체가 변경되는 경우) 될 경우
     // ui 가 refresh 된다. 이외의 경우(ex. 항목의 값이 바뀌는 경우)에는 refresh 되지 않는다.
     val toDoList = remember { mutableStateListOf<ToDoItem>() }
+    var alertSnackBar by remember { mutableStateOf(false) }
+
+    if(alertSnackBar) showSnackBar()
 
     val onSubmit: (String) -> Unit = { text ->
         // 리스트에 데이터 넣기
-        val key = (toDoList.lastOrNull()?.key ?: 0) + 1
-        toDoList.add(ToDoItem(key, text))
-        setText("")
+        if(text.isBlank()) {
+            alertSnackBar = true
+        } else {
+            val key = (toDoList.lastOrNull()?.key ?: 0) + 1
+            toDoList.add(ToDoItem(key, text))
+            setText("")
+            alertSnackBar = false
+        }
     }
 
     val onToggle: (key:Int, checked: Boolean) -> Unit = { key, checked ->
