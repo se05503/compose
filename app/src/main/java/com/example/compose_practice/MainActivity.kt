@@ -1,9 +1,9 @@
 package com.example.compose_practice
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
 class MainActivity : ComponentActivity() {
@@ -42,6 +41,7 @@ fun DefaultPreview() {
 
 val todoList = ArrayList<String>()
 var isInputButtonClicked by mutableStateOf(false)
+var isEditing by mutableStateOf(false)
 var todoContent by mutableStateOf("")
 
 @Composable
@@ -50,7 +50,7 @@ fun ToDoListEx() {
         val todoThing = ToDoInputItem()
         if(isInputButtonClicked) {
             // 할 일 등록
-            if(todoThing == "") {
+            if(todoThing.isBlank()) {
                 val scaffoldState = rememberScaffoldState()
                 LaunchedEffect(scaffoldState.snackbarHostState) {
                     scaffoldState.snackbarHostState.showSnackbar("내용을 입력해주세요!")
@@ -103,7 +103,8 @@ fun ToDoInputItem(): String {
             OutlinedTextField(
                 value = todoContent,
                 onValueChange = {
-                    todoContent = it },
+                    todoContent = it
+                },
                 label = {
                     Text(text = "What's your plan?")
                 }
@@ -131,30 +132,68 @@ fun ToDoInputPreview() {
 fun ToDoItem(todo: String) {
     // 입력한 후 단일 List UI
     var isFinished by remember { mutableStateOf(false) }
-    Card(
-        elevation = 5.dp,
-        modifier = Modifier.padding(5.dp) // padding 을 넣어줘야 elevation 효과를 확인할 수 있다.
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = todo,
-                modifier = Modifier.weight(1f)
-            )
-            Text(text = "완료")
-            Checkbox(checked = isFinished, onCheckedChange = {
-                isFinished = !isFinished
-            })
-            Button(onClick = { /*TODO*/ }) {
-                Text("수정")
+
+    Crossfade(targetState = isEditing) { status ->
+        when (status) {
+            true -> {
+                Card(
+                    elevation = 5.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = todoContent,
+                            onValueChange = {
+                                todoContent = it
+                            },
+                            label = {
+                                Text(text = "What's your plan?")
+                            }
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Button(onClick = {
+                            isInputButtonClicked = true
+                        }) {
+                            Text(
+                                text = "입력"
+                            )
+                        }
+                    }
+                }
             }
-            Spacer(modifier = Modifier.size(8.dp))
-            Button(onClick = { /*TODO*/ }) {
-                Text("삭제")
+            false -> {
+                Card(
+                    elevation = 5.dp,
+                    modifier = Modifier.padding(5.dp) // padding 을 넣어줘야 elevation 효과를 확인할 수 있다.
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = todo,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(text = "완료")
+                        Checkbox(checked = isFinished, onCheckedChange = {
+                            isFinished = !isFinished
+                        })
+                        Button(onClick = { isEditing = true }) {
+                            Text("수정")
+                        }
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Button(onClick = {
+                            // 리스트에서 빼야함
+                        }) {
+                            Text("삭제")
+                        }
+                    }
+                }
             }
         }
     }
