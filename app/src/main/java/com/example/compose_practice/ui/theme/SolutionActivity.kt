@@ -33,35 +33,21 @@ class SolutionActivity : ComponentActivity() {
 }
 
 class ToDoViewModel : ViewModel() {
-    // viewmodel 의 생명주기와 composable 의 생명주기는 서로 다르다. -> remember 가 필요없다.
+    // viewmodel 의 생명주기와 composable 의 생명주기는 서로 다르다. -> remember 를 사용하지 못한다.
     // (이전) 함수 내의 지역 변수 → (이후) 클래스 내에서는 프로퍼티로 작용
     // 프로퍼티로는 destruction 이 불가능하다.
     // by 를 통한 상태 위임(delegate)이 가능하다.
     val text = mutableStateOf("")
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ComposePracticeTheme {
-        TopLevel()
-    }
-}
-
-// 기본 값 = viewModel()
-@Composable
-fun TopLevel(viewModel: ToDoViewModel = viewModel()) {
 
     // 해당 리스트에 항목이 추가, 삭제, 변경(값이 변경되는 것이 아닌 항목 자체가 변경되는 경우) 될 경우
     // ui 가 refresh 된다. 이외의 경우(ex. 항목의 값이 바뀌는 경우)에는 refresh 되지 않는다.
-    val toDoList = remember { mutableStateListOf<ToDoItem>() }
+    val toDoList = mutableStateListOf<ToDoItem>()
 
-    val onSubmit: (String) -> Unit = { text ->
+    val onSubmit: (String) -> Unit = {
         // 리스트에 데이터 넣기
         val key = (toDoList.lastOrNull()?.key ?: 0) + 1
-        toDoList.add(ToDoItem(key, text))
-        viewModel.text.value = ""
+        toDoList.add(ToDoItem(key, it))
+        text.value = ""
     }
 
     val onToggle: (key: Int, checked: Boolean) -> Unit = { key, checked ->
@@ -81,19 +67,33 @@ fun TopLevel(viewModel: ToDoViewModel = viewModel()) {
         val i = toDoList.indexOfFirst { it.key == key }
         toDoList[i] = toDoList[i].copy(text = newText)
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    ComposePracticeTheme {
+        TopLevel()
+    }
+}
+
+// 기본 값 = viewModel()
+@Composable
+fun TopLevel(viewModel: ToDoViewModel = viewModel()) {
 
     Scaffold {
         Column {
-            ToDoInput(text = viewModel.text.value, onTextChanged = { viewModel.text.value = it }, onSubmit = onSubmit)
+            ToDoInput(text = viewModel.text.value, onTextChanged = { viewModel.text.value = it }, onSubmit = viewModel.onSubmit)
             LazyColumn {
                 // 어떤 항목이 재사용 가능한지 아닌지는 key 세팅을 통해 판단할 수 있다 (jetpack compose)
                 // key 가 같으면 재사용 할 수 있다고 판단 -> 효과적인 렌더링 가능
-                items(toDoList, key = { it.key }) { todoItem ->
+                items(viewModel.toDoList, key = { it.key }) { todoItem ->
                     ToDoOutput(
                         toDoItem = todoItem,
-                        onToggle = onToggle,
-                        onDelete = onDelete,
-                        onEdit = onEdit
+                        onToggle = viewModel.onToggle,
+                        onDelete = viewModel.onDelete,
+                        onEdit = viewModel.onEdit
                     )
                 }
             }
