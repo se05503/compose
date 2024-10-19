@@ -41,23 +41,26 @@ fun DefaultPreview() {
     }
 }
 
+// CompositionLocalProvider 에서 사용할 수 있다.
+val LocalElevation = compositionLocalOf { 8.dp }
 
 @Composable
 fun CompositionLocalEx() {
-    // CompositionLocalProvider 를 이용하면 람다 내에 암시적 값을 설정할 수 있다.
-    // LocalContentAlpha 를 ContentAlpha.disabled 로 설정하겠다.
-    Card(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-            // disabled, medium, high 로 갈수록 색이 진해진다.
-            // 중첩적인 사용이 가능하다.
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                test()
-                Text("CompositionLocalProvider 실습중")
-                Text("${LocalContentAlpha.current}")
+
+    // 기본값은 8.dp 이지만 12.dp 로 override 함
+    CompositionLocalProvider(LocalElevation provides 12.dp) {
+        Card(
+            modifier = Modifier.padding(16.dp),
+            elevation = LocalElevation.current
+        ) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    test()
+                    Text("CompositionLocalProvider 실습중")
+                    Text("${LocalContentAlpha.current}")
+                }
             }
         }
     }
