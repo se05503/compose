@@ -50,10 +50,14 @@ fun navigationEx(
         composable("Home") {
             Column {
                 Text("Home 화면입니다.")
-                Button(onClick = {navController.navigate("Office")}) {
+                Button(onClick = {navController.navigate("Office") {
+                    popUpTo("Home")
+                } }) {
                     Text("Office 로 이동하기")
                 }
-                Button(onClick = {navController.navigate("Playground")}) {
+                Button(onClick = {navController.navigate("Playground") {
+                    popUpTo("Home")
+                } }) {
                     Text("Playground 로 이동하기")
                 }
             }
@@ -61,10 +65,14 @@ fun navigationEx(
         composable("Office") {
             Column {
                 Text("Office 화면입니다.")
-                Button(onClick = {navController.navigate("Home")}) {
+                Button(onClick = {navController.navigate("Home") {
+                    popUpTo("Home")
+                } }) {
                     Text("Home 로 이동하기")
                 }
-                Button(onClick = {navController.navigate("Playground")}) {
+                Button(onClick = {navController.navigate("Playground") {
+                    popUpTo("Home")
+                } }) {
                     Text("Playground 로 이동하기")
                 }
             }
@@ -72,10 +80,14 @@ fun navigationEx(
         composable("Playground") {
             Column {
                 Text("Playground 화면입니다.")
-                Button(onClick = {navController.navigate("Home")}) {
+                Button(onClick = {navController.navigate("Home") {
+                    popUpTo("Home")
+                } }) {
                     Text("Home 로 이동하기")
                 }
-                Button(onClick = {navController.navigate("Office")}) {
+                Button(onClick = {navController.navigate("Office") {
+                    popUpTo("Home")
+                } }) {
                     Text("Office 로 이동하기")
                 }
             }
