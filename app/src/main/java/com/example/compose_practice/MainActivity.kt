@@ -69,6 +69,9 @@ fun navigationEx(
                 } }) {
                     Text("Home 로 이동하기")
                 }
+                Button(onClick = { navController.navigate("Data/parkseyoung") }) { // 슬래시 뒤에 전달할 데이터를 작성한다.
+                    Text("Data 전달 화면으로 이동")
+                }
             }
         }
         composable("Office") {
@@ -108,6 +111,10 @@ fun navigationEx(
                     Text("Office 로 이동하기")
                 }
             }
+        }
+        composable("Data/{username}") { // username = 전달받는 데이터의 key 값으로, 전달 받을 때는 중괄호를 쳐야한다.
+            val receivedData = it.arguments?.getString("username")
+            Text("전달받은 데이터: $receivedData")
         }
     }
 }

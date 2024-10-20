@@ -64,6 +64,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
     // livedata → 버전 확인은 구글 문서 확인하기
     implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
+    // navigation -> compose_ui_version 와 같지 않기 때문에 구글 문서를 참고하여 버전을 확인해야한다.
+    implementation "androidx.navigation:navigation-compose:2.5.3"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
