@@ -51,12 +51,16 @@ fun navigationEx(
             Column {
                 Text("Home 화면입니다.")
                 Button(onClick = {navController.navigate("Office") {
-                    popUpTo("Home")
+                    popUpTo("Home") {
+                        inclusive = true
+                    }
                 } }) {
                     Text("Office 로 이동하기")
                 }
                 Button(onClick = {navController.navigate("Playground") {
-                    popUpTo("Home")
+                    popUpTo("Home") {
+                        inclusive = true
+                    }
                 } }) {
                     Text("Playground 로 이동하기")
                 }
@@ -66,12 +70,16 @@ fun navigationEx(
             Column {
                 Text("Office 화면입니다.")
                 Button(onClick = {navController.navigate("Home") {
-                    popUpTo("Home")
+                    popUpTo("Home") {
+                        inclusive = true
+                    }
                 } }) {
                     Text("Home 로 이동하기")
                 }
                 Button(onClick = {navController.navigate("Playground") {
-                    popUpTo("Home")
+                    popUpTo("Home") {
+                        inclusive = true
+                    }
                 } }) {
                     Text("Playground 로 이동하기")
                 }
@@ -81,12 +89,16 @@ fun navigationEx(
             Column {
                 Text("Playground 화면입니다.")
                 Button(onClick = {navController.navigate("Home") {
-                    popUpTo("Home")
+                    popUpTo("Home") {
+                        inclusive = true
+                    }
                 } }) {
                     Text("Home 로 이동하기")
                 }
                 Button(onClick = {navController.navigate("Office") {
-                    popUpTo("Home")
+                    popUpTo("Home") {
+                        inclusive = true
+                    }
                 } }) {
                     Text("Office 로 이동하기")
                 }
