@@ -64,6 +64,11 @@ fun navigationEx(
                 } }) {
                     Text("Playground 로 이동하기")
                 }
+                Button(onClick = { navController.navigate("Home") {
+                    launchSingleTop = true
+                } }) {
+                    Text("Home 로 이동하기")
+                }
             }
         }
         composable("Office") {
