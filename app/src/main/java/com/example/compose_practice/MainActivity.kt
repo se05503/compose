@@ -8,7 +8,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.compose_practice.ui.theme.ComposePracticeTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    ThemeEx()
+                    navigationEx()
                 }
             }
         }
@@ -32,24 +37,47 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        ThemeEx()
+        navigationEx()
     }
 }
 
 @Composable
-fun ThemeEx() {
-    Card(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("Theme 공부중")
-            Text("Theme 공부중")
-            Text("Theme 공부중")
-            Text("Theme 공부중")
-            Text("Theme 공부중")
-            Text("Theme 공부중")
-            Button(onClick = { /*TODO*/ }) {
-                Text("버튼")
+fun navigationEx(
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController() // = 다음은 기본값
+) {
+    NavHost(navController = navController, startDestination = "Home", modifier = modifier) {
+        composable("Home") {
+            Column {
+                Text("Home 화면입니다.")
+                Button(onClick = {navController.navigate("Office")}) {
+                    Text("Office 로 이동하기")
+                }
+                Button(onClick = {navController.navigate("Playground")}) {
+                    Text("Playground 로 이동하기")
+                }
+            }
+        }
+        composable("Office") {
+            Column {
+                Text("Office 화면입니다.")
+                Button(onClick = {navController.navigate("Home")}) {
+                    Text("Home 로 이동하기")
+                }
+                Button(onClick = {navController.navigate("Playground")}) {
+                    Text("Playground 로 이동하기")
+                }
+            }
+        }
+        composable("Playground") {
+            Column {
+                Text("Playground 화면입니다.")
+                Button(onClick = {navController.navigate("Home")}) {
+                    Text("Home 로 이동하기")
+                }
+                Button(onClick = {navController.navigate("Office")}) {
+                    Text("Office 로 이동하기")
+                }
             }
         }
     }
