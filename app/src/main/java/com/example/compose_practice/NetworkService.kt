@@ -11,7 +11,7 @@ interface NetworkService {
 data class PokemonResponse(
     val count: Int, // 얘네 굳이 써야하나?
     val next: String, // 얘네 굳이 써야하나?
-    val previous: Boolean, // 얘네 굳이 써야하나?
+    val previous: String, // 얘네 굳이 써야하나?
     val results: List<PokemonEntity>
 )
 

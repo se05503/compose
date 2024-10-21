@@ -31,15 +31,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
 
-    lateinit var pokemonItems: List<PokemonEntity>
+    var pokemonItems = listOf<PokemonEntity>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         codeCacheDir.setReadOnly()
 
         // server retrofit
-        val retrofit = Retrofit.Builder().baseUrl("https://pokeapi.co/api/v2/")
-            .addConverterFactory(GsonConverterFactory.create()).build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://pokeapi.co/api/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
         val retrofitService = retrofit.create(NetworkService::class.java)
         retrofitService.getPokemonItems().enqueue(object: Callback<PokemonResponse> {
@@ -51,6 +53,16 @@ class MainActivity : ComponentActivity() {
                     Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
                     val response = response.body()
                     pokemonItems = response?.results ?: emptyList()
+                    setContent {
+                        ComposePracticeTheme {
+                            Surface(
+                                color = MaterialTheme.colors.background,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                PokemonEx(pokemonItems)
+                            }
+                        }
+                    }
                 } else {
                     Toast.makeText(
                         this@MainActivity,
@@ -61,21 +73,9 @@ class MainActivity : ComponentActivity() {
             }
 
             override fun onFailure(call: Call<PokemonResponse>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "onFailure", Toast.LENGTH_SHORT).show()
             }
-
         })
-
-        setContent {
-            ComposePracticeTheme {
-                Surface(
-                    color = MaterialTheme.colors.background,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    PokemonEx(pokemonItems)
-                }
-            }
-        }
     }
 }
 
