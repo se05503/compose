@@ -1,6 +1,8 @@
 package com.example.compose_practice
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -21,18 +23,56 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.compose_practice.ui.theme.ui.theme.ComposePracticeTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
+
+    lateinit var pokemonItems: List<PokemonEntity>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         codeCacheDir.setReadOnly()
+
+        // server retrofit
+        val retrofit = Retrofit.Builder().baseUrl("https://pokeapi.co/api/v2/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
+
+        val retrofitService = retrofit.create(NetworkService::class.java)
+        retrofitService.getPokemonItems().enqueue(object: Callback<PokemonResponse> {
+            override fun onResponse(
+                call: Call<PokemonResponse>,
+                response: Response<PokemonResponse>
+            ) {
+                if(response.isSuccessful) {
+                    Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
+                    val response = response.body()
+                    pokemonItems = response?.results ?: emptyList()
+                } else {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "response is not successful",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<PokemonResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
         setContent {
             ComposePracticeTheme {
                 Surface(
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    PokemonEx()
+                    PokemonEx(pokemonItems)
                 }
             }
         }
@@ -43,27 +83,22 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        PokemonEx()
+        PokemonEx(MainActivity().pokemonItems)
     }
 }
 
 @Composable
-fun PokemonEx() {
-    val dummyPokemons = listOf(
-        Pokemon(0, "포켓몬1", "http1", R.drawable.pokemon1),
-        Pokemon(1, "포켓몬2", "http2", R.drawable.pokemon2),
-        Pokemon(2, "포켓몬3", "http3", R.drawable.pokemon3)
-    )
+fun PokemonEx(pokemonItems: List<PokemonEntity>) {
     LazyColumn {
-        items(dummyPokemons) { dummyPokemon ->
-            IndividualPokemonItem(dummyPokemon)
+        items(pokemonItems) { pokemonItem ->
+            IndividualPokemonItem(pokemonItem)
         }
     }
 }
 
 @Composable
 fun IndividualPokemonItem(
-    pokemon: Pokemon,
+    pokemon: PokemonEntity,
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(navController = navController, startDestination = "Home") {
@@ -80,11 +115,11 @@ fun IndividualPokemonItem(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = "포켓몬: ${pokemon.pokemonName}",
+                            text = "포켓몬: ${pokemon.name}",
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = pokemon.pokemonAddress,
+                            text = pokemon.url,
                             color = Color.Gray
                         )
                     }
@@ -97,31 +132,30 @@ fun IndividualPokemonItem(
             }
         }
         composable("Detail") {
-            Card(modifier = Modifier.padding(8.dp)) {
-                Column(
-                    modifier = Modifier.padding(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = pokemon.pokemonName)
-                    Image(painter = painterResource(id = pokemon.pokemonImage), contentDescription = pokemon.pokemonName)
-                    Button(onClick = {
-                        navController.navigate("Home")
-                    }) {
-                        Text(text ="뒤로")
+            Surface(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Card(modifier = Modifier.padding(8.dp)) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = pokemon.name)
+                        Image(
+                            painter = painterResource(id = R.drawable.pokemon1),
+                            contentDescription = pokemon.name
+                        )
+                        Button(onClick = {
+                            navController.navigate("Home")
+                        }) {
+                            Text(text = "뒤로")
+                        }
                     }
                 }
             }
         }
     }
 }
-
-data class Pokemon(
-    val id: Int,
-    val pokemonName: String,
-    val pokemonAddress: String,
-    val pokemonImage: Int // server 연결할 때 type 을 String 으로 바꾸기
-)
-
 
 
 

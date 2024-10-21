@@ -66,6 +66,12 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
     // navigation -> compose_ui_version 와 같지 않기 때문에 구글 문서를 참고하여 버전을 확인해야한다.
     implementation "androidx.navigation:navigation-compose:2.5.3"
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    // gson
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    // Glide
+    implementation "com.github.bumptech.glide:glide:4.16.0"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
