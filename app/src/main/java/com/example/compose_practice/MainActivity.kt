@@ -44,7 +44,9 @@ class MainActivity : ComponentActivity() {
             .build()
 
         val retrofitService = retrofit.create(NetworkService::class.java)
-        retrofitService.getPokemonItems().enqueue(object: Callback<PokemonResponse> {
+        retrofitService.getMultiplePagePokemonItems(
+            offset = 20, limit = 40
+        ).enqueue(object: Callback<PokemonResponse> {
             override fun onResponse(
                 call: Call<PokemonResponse>,
                 response: Response<PokemonResponse>
