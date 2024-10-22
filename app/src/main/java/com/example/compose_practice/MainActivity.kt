@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.compose_practice.ui.theme.ui.theme.ComposePracticeTheme
 import retrofit2.Call
 import retrofit2.Callback
@@ -45,13 +46,13 @@ class MainActivity : ComponentActivity() {
 
         val retrofitService = retrofit.create(NetworkService::class.java)
         retrofitService.getMultiplePagePokemonItems(
-            offset = 20, limit = 40
-        ).enqueue(object: Callback<PokemonResponse> {
+            offset = 0, limit = 40
+        ).enqueue(object : Callback<PokemonResponse> {
             override fun onResponse(
                 call: Call<PokemonResponse>,
                 response: Response<PokemonResponse>
             ) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
                     val response = response.body()
                     pokemonItems = response?.results ?: emptyList()
@@ -103,6 +104,7 @@ fun IndividualPokemonItem(
     pokemon: PokemonEntity,
     navController: NavHostController = rememberNavController()
 ) {
+    val pid = pokemon.url.filter { it.isDigit() }.removePrefix("2") // 이렇게 받아오는건 아닌 것 같은데.. position 도 안되는 것 같고.. 다른 방법이 있을까?
     NavHost(navController = navController, startDestination = "Home") {
         composable("Home") {
             Card(
@@ -126,14 +128,38 @@ fun IndividualPokemonItem(
                         )
                     }
                     Button(onClick = {
-                        navController.navigate("Detail")
+                        navController.navigate("Detail/$pid")
                     }) {
                         Text(text = "보기")
                     }
                 }
             }
         }
-        composable("Detail") {
+
+        composable("Detail/{pid}") {
+            var image: String? = null
+            val pid = it.arguments?.getString("pid")?.toInt()
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://pokeapi.co/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            val networkService = retrofit.create(NetworkService::class.java)
+            networkService.getPokemonImages(pid!!).enqueue(object : Callback<PokemonSprites> {
+                override fun onResponse(
+                    call: Call<PokemonSprites>,
+                    response: Response<PokemonSprites>
+                ) {
+                    if(response.isSuccessful) {
+                        // 여기에 걸린다. 이미지 잘온다.
+                        val response = response.body()
+                        image = response?.sprites?.front_default // 여기는 이미지가 잘 오는데
+                    }
+                }
+
+                override fun onFailure(call: Call<PokemonSprites>, t: Throwable) {
+                    Log.d("response: ","onFailure")
+                }
+            })
             Surface(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -143,10 +169,7 @@ fun IndividualPokemonItem(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = pokemon.name)
-                        Image(
-                            painter = painterResource(id = R.drawable.pokemon1),
-                            contentDescription = pokemon.name
-                        )
+                        AsyncImage(model = image, contentDescription = pokemon.name) // 여기서는 이미지가 null 로 전달되네
                         Button(onClick = {
                             navController.navigate("Home")
                         }) {

@@ -2,7 +2,7 @@ package com.example.compose_practice
 
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NetworkService {
@@ -16,9 +16,13 @@ interface NetworkService {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int
     ): Call<PokemonResponse>
+
+    // 포켓몬 이미지 받아오기
+    @GET("pokemon/{pid}")
+    fun getPokemonImages(
+        @Path("pid") pid: Int
+    ): Call<PokemonSprites>
 }
-
-
 
 data class PokemonResponse(
     val count: Int, // 얘네 굳이 써야하나?
@@ -30,4 +34,12 @@ data class PokemonResponse(
 data class PokemonEntity(
     val name: String,
     val url: String
+)
+
+data class PokemonSprites(
+    val sprites: PokemonImage
+)
+
+data class PokemonImage(
+    val front_default: String
 )
