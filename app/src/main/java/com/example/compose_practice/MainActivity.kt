@@ -36,6 +36,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        val pokemonViewModel = PokemonViewModel()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         codeCacheDir.setReadOnly()
@@ -46,148 +50,142 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    PokemonEx()
+                    PokemonEx(pokemonViewModel)
                 }
             }
         }
     }
+}
 
-    class PokemonViewModel : ViewModel() {
-        var image = mutableStateOf("")
-        var pokemonItems = mutableStateListOf<PokemonEntity>()
+class PokemonViewModel : ViewModel() {
+    var image = mutableStateOf("")
+    var pokemonItems = mutableStateListOf<PokemonEntity>()
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    ComposePracticeTheme {
+        PokemonEx(MainActivity.pokemonViewModel)
     }
+}
 
-    @Preview(showBackground = true)
-    @Composable
-    fun DefaultPreview() {
-        ComposePracticeTheme {
-            PokemonEx()
+@Composable
+fun PokemonEx(
+    pokemonViewModel: PokemonViewModel
+) {
+    val retrofit = Retrofit.Builder()
+        .baseUrl("https://pokeapi.co/api/v2/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    val retrofitService = retrofit.create(NetworkService::class.java)
+    retrofitService.getMultiplePagePokemonItems(
+        offset = 0, limit = 40
+    ).enqueue(object : Callback<PokemonResponse> {
+        override fun onResponse(
+            call: Call<PokemonResponse>,
+            response: Response<PokemonResponse>
+        ) {
+            if (response.isSuccessful) {
+                val response = response.body()
+                pokemonViewModel.pokemonItems.addAll(response!!.results)
+            }
+        }
+
+        override fun onFailure(call: Call<PokemonResponse>, t: Throwable) {
+            Log.d("server response: ","onFailure")
+        }
+    })
+
+    LazyColumn {
+        items(pokemonViewModel.pokemonItems) { pokemonItem ->
+            IndividualPokemonItem(pokemonItem, pokemonViewModel = pokemonViewModel)
         }
     }
+}
 
-    @Composable
-    fun PokemonEx(
-        pokemonViewModel: PokemonViewModel = viewModel()
-    ) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://pokeapi.co/api/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val retrofitService = retrofit.create(NetworkService::class.java)
-        retrofitService.getMultiplePagePokemonItems(
-            offset = 0, limit = 40
-        ).enqueue(object : Callback<PokemonResponse> {
-            override fun onResponse(
-                call: Call<PokemonResponse>,
-                response: Response<PokemonResponse>
+@Composable
+fun IndividualPokemonItem(
+    pokemon: PokemonEntity,
+    navController: NavHostController = rememberNavController(),
+    pokemonViewModel: PokemonViewModel
+) {
+    NavHost(navController = navController, startDestination = "Home") {
+        composable("Home") {
+            Card(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
             ) {
-                if (response.isSuccessful) {
-                    val response = response.body()
-                    pokemonViewModel.pokemonItems.addAll(response!!.results)
-                } else {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "response is not successful",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            override fun onFailure(call: Call<PokemonResponse>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "onFailure", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        LazyColumn {
-            items(pokemonViewModel.pokemonItems) { pokemonItem ->
-                IndividualPokemonItem(pokemonItem)
-            }
-        }
-    }
-
-    @Composable
-    fun IndividualPokemonItem(
-        pokemon: PokemonEntity,
-        navController: NavHostController = rememberNavController(),
-        pokemonViewModel: PokemonViewModel = viewModel()
-    ) {
-        NavHost(navController = navController, startDestination = "Home") {
-            composable("Home") {
-                Card(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
+                Row(
+                    modifier = Modifier.padding(8.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.padding(8.dp)
+                    Column(
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = "포켓몬: ${pokemon.name}",
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = pokemon.url,
-                                color = Color.Gray
-                            )
-                        }
-                        Button(onClick = {
-                            val encodedUrl = Uri.encode(pokemon.url)
-                            navController.navigate("Detail/$encodedUrl")
-                        }) {
-                            Text(text = "보기")
-                        }
+                        Text(
+                            text = "포켓몬: ${pokemon.name}",
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = pokemon.url,
+                            color = Color.Gray
+                        )
+                    }
+                    Button(onClick = {
+                        val encodedUrl = Uri.encode(pokemon.url)
+                        navController.navigate("Detail/$encodedUrl")
+                    }) {
+                        Text(text = "보기")
                     }
                 }
             }
-            composable("Detail/{encodedUrl}") {
-                val decodedUrl = Uri.decode(it.arguments?.getString("encodedUrl"))
-                val pid = decodedUrl?.filter { url ->
-                    url.isDigit()
-                }?.removePrefix("2")
-                    ?.toInt() // 이렇게 받아오는건 아닌 것 같은데.. position 도 안되는 것 같고.. 다른 방법이 있을까?
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("https://pokeapi.co/api/v2/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                val networkService = retrofit.create(NetworkService::class.java)
-                networkService.getPokemonImages(pid ?: 0)
-                    .enqueue(object : Callback<PokemonSprites> {
-                        override fun onResponse(
-                            call: Call<PokemonSprites>,
-                            response: Response<PokemonSprites>
-                        ) {
-                            if (response.isSuccessful) {
-                                val response = response.body()
-                                pokemonViewModel.image.value = response!!.sprites.front_default
-                            }
+        }
+        composable("Detail/{encodedUrl}") {
+            val decodedUrl = Uri.decode(it.arguments?.getString("encodedUrl"))
+            val pid = decodedUrl?.filter { url ->
+                url.isDigit()
+            }?.removePrefix("2")
+                ?.toInt() // 이렇게 받아오는건 아닌 것 같은데.. position 도 안되는 것 같고.. 다른 방법이 있을까?
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://pokeapi.co/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            val networkService = retrofit.create(NetworkService::class.java)
+            networkService.getPokemonImages(pid ?: 0)
+                .enqueue(object : Callback<PokemonSprites> {
+                    override fun onResponse(
+                        call: Call<PokemonSprites>,
+                        response: Response<PokemonSprites>
+                    ) {
+                        if (response.isSuccessful) {
+                            val response = response.body()
+                            pokemonViewModel.image.value = response!!.sprites.front_default
                         }
+                    }
 
-                        override fun onFailure(call: Call<PokemonSprites>, t: Throwable) {
-                            Log.d("response: ", "onFailure")
-                        }
-                    })
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Card(modifier = Modifier.padding(8.dp)) {
-                        Column(
-                            modifier = Modifier.padding(12.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = pokemon.name)
-                            AsyncImage(
-                                model = pokemonViewModel.image,
-                                contentDescription = pokemon.name,
-                                modifier = Modifier.size(100.dp)
-                            )
-                            Button(onClick = {
-                                navController.navigate("Home")
-                            }) {
-                                Text(text = "뒤로")
-                            }
+                    override fun onFailure(call: Call<PokemonSprites>, t: Throwable) {
+                        Log.d("response: ", "onFailure")
+                    }
+                })
+            Surface(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Card(modifier = Modifier.padding(8.dp)) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = pokemon.name)
+                        AsyncImage(
+                            model = pokemonViewModel.image,
+                            contentDescription = pokemon.name,
+                            modifier = Modifier.size(100.dp)
+                        )
+                        Button(onClick = {
+                            navController.navigate("Home")
+                        }) {
+                            Text(text = "뒤로")
                         }
                     }
                 }
@@ -195,6 +193,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 
 
