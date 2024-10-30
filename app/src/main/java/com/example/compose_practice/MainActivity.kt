@@ -3,25 +3,23 @@ package com.example.compose_practice
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -59,7 +57,20 @@ class MainActivity : ComponentActivity() {
 }
 
 class PokemonViewModel : ViewModel() {
-    var pokemonItems = mutableStateListOf<PokemonEntity>()
+    private val _rawPokemonItems = mutableStateListOf<PokemonEntity>()
+
+    private val _pokemonItems = MutableLiveData<List<PokemonEntity>>(_rawPokemonItems)
+    val pokemonItems: LiveData<List<PokemonEntity>> = _pokemonItems
+
+    val onReceiveListFromServer: (List<PokemonEntity>) -> Unit = {
+        _rawPokemonItems.addAll(it)
+        _pokemonItems.value = ArrayList(_rawPokemonItems)
+    }
+
+    val onChangeImage: (Int, String) -> Unit = { idx, imageSrc ->
+        _rawPokemonItems[idx] = _rawPokemonItems[idx].copy(image = imageSrc)
+        _pokemonItems.value = _rawPokemonItems.toMutableList()
+    }
 }
 
 @Preview(showBackground = true)
@@ -85,8 +96,10 @@ fun PokemonEx() {
             response: Response<PokemonResponse>
         ) {
             if (response.isSuccessful) {
-                val response = response.body()
-                pokemonViewModel.pokemonItems.addAll(response!!.results)
+                val pokemonItems = response.body()?.results
+                if(pokemonItems!=null) {
+                    pokemonViewModel.onReceiveListFromServer(pokemonItems)
+                }
             }
         }
 
@@ -95,8 +108,9 @@ fun PokemonEx() {
         }
     })
 
+    val pokemonItems = pokemonViewModel.pokemonItems.observeAsState(emptyList()).value
     LazyColumn {
-        items(pokemonViewModel.pokemonItems) { pokemonItem ->
+        items(pokemonItems) { pokemonItem ->
             IndividualPokemonItem(pokemonItem)
         }
     }
@@ -149,6 +163,7 @@ fun IndividualPokemonItem(
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             val networkService = retrofit.create(NetworkService::class.java)
+            val pokemonList = pokemonViewModel.pokemonItems.observeAsState(emptyList()).value
             networkService.getPokemonImages(pid!!)
                 .enqueue(object : Callback<PokemonSprites> {
                     override fun onResponse(
@@ -157,10 +172,13 @@ fun IndividualPokemonItem(
                     ) {
                         if (response.isSuccessful) {
                             val response = response.body()
-                            val index = pokemonViewModel.pokemonItems.indexOfFirst { it ->
-                                it.name == pokemon.name
+                            Log.d("list", pokemonList.toString())
+                            if(pokemonList.isNotEmpty()) {
+                                val index = pokemonList.indexOfFirst { it ->
+                                    it.name == pokemon.name
+                                }
+                                pokemonViewModel.onChangeImage(index, response?.sprites!!.front_default)
                             }
-                            pokemonViewModel.pokemonItems[index] = pokemonViewModel.pokemonItems[index].copy(image = response!!.sprites.front_default) // 프로퍼티만 바꾸면 composable 함수에서 recomposition 이 일어나지 않는다.
                         }
                     }
 
