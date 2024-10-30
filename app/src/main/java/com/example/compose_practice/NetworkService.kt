@@ -33,7 +33,8 @@ data class PokemonResponse(
 
 data class PokemonEntity(
     val name: String,
-    val url: String
+    val url: String,
+    var image: String? = null // 서버에서 처음에 받아오는 값 아님
 )
 
 data class PokemonSprites(

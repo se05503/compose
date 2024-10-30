@@ -27,6 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.compose_practice.MainActivity.Companion.pokemonViewModel
 import com.example.compose_practice.ui.theme.ui.theme.ComposePracticeTheme
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,7 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : ComponentActivity() {
 
     companion object {
-        val pokemonViewModel = PokemonViewModel()
+        val pokemonViewModel = PokemonViewModel() // 한번만 생성한다.
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    PokemonEx(pokemonViewModel)
+                    PokemonEx()
                 }
             }
         }
@@ -58,7 +59,6 @@ class MainActivity : ComponentActivity() {
 }
 
 class PokemonViewModel : ViewModel() {
-    var image = mutableStateOf("")
     var pokemonItems = mutableStateListOf<PokemonEntity>()
 }
 
@@ -66,14 +66,12 @@ class PokemonViewModel : ViewModel() {
 @Composable
 fun DefaultPreview() {
     ComposePracticeTheme {
-        PokemonEx(MainActivity.pokemonViewModel)
+        PokemonEx()
     }
 }
 
 @Composable
-fun PokemonEx(
-    pokemonViewModel: PokemonViewModel
-) {
+fun PokemonEx() {
     val retrofit = Retrofit.Builder()
         .baseUrl("https://pokeapi.co/api/v2/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -99,7 +97,7 @@ fun PokemonEx(
 
     LazyColumn {
         items(pokemonViewModel.pokemonItems) { pokemonItem ->
-            IndividualPokemonItem(pokemonItem, pokemonViewModel = pokemonViewModel)
+            IndividualPokemonItem(pokemonItem)
         }
     }
 }
@@ -108,7 +106,6 @@ fun PokemonEx(
 fun IndividualPokemonItem(
     pokemon: PokemonEntity,
     navController: NavHostController = rememberNavController(),
-    pokemonViewModel: PokemonViewModel
 ) {
     NavHost(navController = navController, startDestination = "Home") {
         composable("Home") {
@@ -152,7 +149,7 @@ fun IndividualPokemonItem(
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             val networkService = retrofit.create(NetworkService::class.java)
-            networkService.getPokemonImages(pid ?: 0)
+            networkService.getPokemonImages(pid!!)
                 .enqueue(object : Callback<PokemonSprites> {
                     override fun onResponse(
                         call: Call<PokemonSprites>,
@@ -160,7 +157,10 @@ fun IndividualPokemonItem(
                     ) {
                         if (response.isSuccessful) {
                             val response = response.body()
-                            pokemonViewModel.image.value = response!!.sprites.front_default
+                            val index = pokemonViewModel.pokemonItems.indexOfFirst { it ->
+                                it.name == pokemon.name
+                            }
+                            pokemonViewModel.pokemonItems[index] = pokemonViewModel.pokemonItems[index].copy(image = response!!.sprites.front_default) // 프로퍼티만 바꾸면 composable 함수에서 recomposition 이 일어나지 않는다.
                         }
                     }
 
@@ -178,7 +178,7 @@ fun IndividualPokemonItem(
                     ) {
                         Text(text = pokemon.name)
                         AsyncImage(
-                            model = pokemonViewModel.image,
+                            model = pokemon.image,
                             contentDescription = pokemon.name,
                             modifier = Modifier.size(100.dp)
                         )
