@@ -8,29 +8,30 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose_practice.R
 
-// 값이 중복되면 상수로 빼는게 좋다. 상수는 BIG_SNAKE_CASE 를 쓰는게 좋다.
-private val CARD_WIDTH = 150.dp
-
-// class가 아니라 composable 함수로 만듬
 @Composable
 fun MovieItem() {
     Column(
         modifier = Modifier
-            .width(CARD_WIDTH)
+            .width(150.dp)
             .padding(10.dp)
     ) {
         Poster(
-            modifier = Modifier.width(CARD_WIDTH)
+            modifier = Modifier.fillMaxWidth()
         )
         Text(
             text = "영화 제목입니다. 영화 제목입니다.",
@@ -42,6 +43,12 @@ fun MovieItem() {
             modifier = Modifier.padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically // Alignment = 다른 방향, Arrangement = 같은 방향
         ) {
+            Icon(
+                modifier = Modifier.padding(4.dp).size(12.dp),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_star),
+                tint = Color.Black.copy(alpha = 0.5f),
+                contentDescription = "영화에 대한 평점" // 시각 장애인을 위한 청각 서비스를 제공할 때 읽어줌. 아이콘, 이미지에 무조건 넣어줘야함
+            )
             Text(
                 text = "5.0"
             )
@@ -55,7 +62,7 @@ fun Poster(
     modifier: Modifier
 ) {
     Card( // 모서리 둥글게 함
-        modifier.fillMaxWidth().height(200.dp)
+        modifier.height(200.dp)
     ) {
         Box(
             modifier = Modifier.background(Color.Blue)
