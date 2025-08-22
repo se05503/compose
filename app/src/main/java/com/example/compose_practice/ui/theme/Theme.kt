@@ -2,50 +2,31 @@ package com.example.compose_practice.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import com.example.compose_practice.ui.theme.color.ColorSet
 
-private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
-)
-
-private val LightColorPalette = lightColors(
-    primary = Color.Blue,
-    onPrimary = Color.White,
-    primaryVariant = Purple700,
-    secondary = Teal200,
-    surface = Color.Red,
-    onSurface = Color.Yellow
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
-)
+private val LocalColors = staticCompositionLocalOf { ColorSet.Red.LightColors }
 
 @Composable
 fun ComposePracticeTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    myColors: ColorSet,
+    darkTheme: Boolean = isSystemInDarkTheme(), // 시스템에서 파악
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        myColors.DarkColors
     } else {
-        LightColorPalette
+        myColors.LightColors
     }
 
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+    CompositionLocalProvider(LocalColors provides colors) {
+        MaterialTheme(
+            colors = colors.material, // 테마에서 사용되는 색상
+            typography = Typography, // 테마에서 사용되는 서체
+            shapes = Shapes, // 테마에서 사용되는 모양
+            content = content
+        )
+    }
 }
