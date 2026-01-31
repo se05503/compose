@@ -1,8 +1,7 @@
-package com.example.compose_practice.ui.components.movie.buttons
+package com.example.compose_practice.ui.components.buttons
 
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,12 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.compose_practice.ui.theme.Paddings
 import com.example.compose_practice.ui.theme.colorScheme
+import com.example.compose_practice.ui.theme.underlinedButton
 
 @Composable
-fun SecondaryButton(
+fun UnderlinedTextButton(
     modifier: Modifier = Modifier,
     @StringRes id: Int? = null,
     text: String = "",
@@ -31,10 +30,6 @@ fun SecondaryButton(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         onClick = onClick,
-        border = BorderStroke(
-            2.dp,
-            MaterialTheme.colorScheme.secondary
-        ),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.secondary,
@@ -48,7 +43,7 @@ fun SecondaryButton(
         ) {
             Text(
                 text = id?.let { stringResource(id = id) } ?: text,
-                style = MaterialTheme.typography.button,
+                style = MaterialTheme.typography.underlinedButton,
                 modifier = Modifier.padding(Paddings.small)
             )
         }
@@ -57,12 +52,10 @@ fun SecondaryButton(
 
 @Preview
 @Composable
-fun SecondaryButtonPreview() {
-    MaterialTheme {
-        SecondaryButton(
-            text = "CANCEL"
-        ) {
+fun UnderlinedTextButtonPreview() {
+    UnderlinedTextButton(
+        text = "SUBMIT"
+    ) {
 
-        }
     }
 }

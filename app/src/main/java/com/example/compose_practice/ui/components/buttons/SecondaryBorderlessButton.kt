@@ -1,4 +1,4 @@
-package com.example.compose_practice.ui.components.movie.buttons
+package com.example.compose_practice.ui.components.buttons
 
 
 import androidx.annotation.StringRes
