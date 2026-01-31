@@ -8,6 +8,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.example.compose_practice.ui.theme.color.ColorSet
 import androidx.compose.material.Typography
+import androidx.compose.runtime.ReadOnlyComposable
+import com.example.compose_practice.ui.theme.color.MyColors
 
 private val LocalColors = staticCompositionLocalOf { ColorSet.Red.LightColors }
 
@@ -34,3 +36,8 @@ fun ComposePracticeTheme(
         )
     }
 }
+
+val MaterialTheme.colorScheme: MyColors
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalColors.current
